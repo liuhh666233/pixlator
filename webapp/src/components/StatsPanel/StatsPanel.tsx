@@ -463,7 +463,7 @@ const StatsPanel: React.FC<StatsPanelProps> = ({
                     active={activeTab === 'history'}
                     onClick={() => handleTabChange('history')}
                 >
-                    历史记录 ({history.length})
+                    历史记录
                 </TabButton>
                 <TabButton
                     active={activeTab === 'usage'}

@@ -1,5 +1,6 @@
 import os
 from typing import List, Dict, Tuple, Optional
+from datetime import datetime
 from PIL import Image
 import numpy as np
 from sklearn.cluster import KMeans
@@ -127,6 +128,56 @@ class ImageProcessor:
             })
         
         return diagonal_stats
+    
+    def export_pixelated_image(self, pixel_data: List[List[Dict]], dimensions: Dict, pixel_size: int = 10, export_type: str = "png") -> str:
+        """导出像素化图片"""
+        try:
+            width = dimensions["width"]
+            height = dimensions["height"]
+            
+            # 创建新图片
+            export_width = width * pixel_size
+            export_height = height * pixel_size
+            export_img = Image.new("RGB", (export_width, export_height), (255, 255, 255))
+            
+            # 绘制像素
+            for y, row in enumerate(pixel_data):
+                for x, pixel in enumerate(row):
+                    color = pixel["color"]
+                    # 确保颜色值是元组格式
+                    if isinstance(color, list):
+                        color = tuple(color)
+                    elif not isinstance(color, tuple):
+                        # 如果是其他格式，尝试转换为元组
+                        color = tuple(color) if hasattr(color, '__iter__') else (0, 0, 0)
+                    
+                    pixel_x = x * pixel_size
+                    pixel_y = y * pixel_size
+                    
+                    # 绘制像素块
+                    for dy in range(pixel_size):
+                        for dx in range(pixel_size):
+                            export_img.putpixel((pixel_x + dx, pixel_y + dy), color)
+            
+            # 生成导出文件名
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            export_filename = f"pixelated_{timestamp}.{export_type}"
+            export_path = os.path.join(settings.UPLOAD_DIR, export_filename)
+            
+            # 保存图片
+            if export_type.lower() == "png":
+                export_img.save(export_path, "PNG")
+            elif export_type.lower() == "jpg":
+                export_img.save(export_path, "JPEG", quality=95)
+            else:
+                export_img.save(export_path, "PNG")
+            
+            self.logger.info(f"Exported pixelated image: {export_path}")
+            return export_filename
+            
+        except Exception as e:
+            self.logger.error(f"Error exporting pixelated image: {e}")
+            raise
 
 
 class DiagonalPixelArtConverter:

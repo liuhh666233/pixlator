@@ -5,6 +5,7 @@ import ImageUploader from './components/ImageUploader';
 import ParameterPanel from './components/ParameterPanel';
 import PixelGrid from './components/PixelGrid/PixelGrid';
 import StatsPanel from './components/StatsPanel/StatsPanel';
+import ExportPanel from './components/ExportPanel';
 import { processImage } from './services/api';
 import { UploadResponse, ProcessResult, ColorStat, DiagonalStat, HistoryItem } from './types';
 
@@ -235,6 +236,84 @@ const App: React.FC = () => {
         }
     };
 
+    const handleExportPNG = async (pixelSize: number = 16) => {
+        if (!uploadedFile || !processingResult) {
+            setStatusMessage({ type: 'error', text: '没有可导出的数据' });
+            return;
+        }
+
+        try {
+            setStatusMessage({ type: 'info', text: '正在导出PNG...' });
+
+            const formData = new FormData();
+            formData.append('export_type', 'png');
+            formData.append('pixel_size', pixelSize.toString());
+
+            const response = await fetch(`/api/export/${uploadedFile.file_id}`, {
+                method: 'POST',
+                body: formData,
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                // 触发下载
+                const downloadUrl = result.data.download_url;
+                const link = document.createElement('a');
+                link.href = downloadUrl;
+                link.download = result.data.filename;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+
+                setStatusMessage({ type: 'success', text: 'PNG导出成功！' });
+            } else {
+                setStatusMessage({ type: 'error', text: '导出失败' });
+            }
+        } catch (error) {
+            setStatusMessage({ type: 'error', text: '导出失败，请重试' });
+        }
+    };
+
+    const handleExportJPG = async (pixelSize: number = 16) => {
+        if (!uploadedFile || !processingResult) {
+            setStatusMessage({ type: 'error', text: '没有可导出的数据' });
+            return;
+        }
+
+        try {
+            setStatusMessage({ type: 'info', text: '正在导出JPG...' });
+
+            const formData = new FormData();
+            formData.append('export_type', 'jpg');
+            formData.append('pixel_size', pixelSize.toString());
+
+            const response = await fetch(`/api/export/${uploadedFile.file_id}`, {
+                method: 'POST',
+                body: formData,
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                // 触发下载
+                const downloadUrl = result.data.download_url;
+                const link = document.createElement('a');
+                link.href = downloadUrl;
+                link.download = result.data.filename;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+
+                setStatusMessage({ type: 'success', text: 'JPG导出成功！' });
+            } else {
+                setStatusMessage({ type: 'error', text: '导出失败' });
+            }
+        } catch (error) {
+            setStatusMessage({ type: 'error', text: '导出失败，请重试' });
+        }
+    };
+
     return (
         <>
             <GlobalStyles />
@@ -268,6 +347,16 @@ const App: React.FC = () => {
                             processing={processing}
                             disabled={!uploadedFile}
                         />
+
+                        {processingResult && (
+                            <ExportPanel
+                                pixelData={processingResult.pixel_data}
+                                dimensions={processingResult.dimensions}
+                                onExportPNG={handleExportPNG}
+                                onExportJPG={handleExportJPG}
+                                disabled={processing}
+                            />
+                        )}
                     </LeftPanel>
 
                     <CenterPanel>

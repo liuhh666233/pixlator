@@ -185,18 +185,26 @@ async def export_result(filename: str, export_type: str = Form(...), pixel_size:
         if not result:
             raise HTTPException(status_code=404, detail="Processing result not found")
         
-        # TODO: 实现导出功能
-        # 这里暂时返回一个占位符响应
-        export_filename = f"export_{filename}_{export_type}"
+        # 导出像素化图片
+        export_filename = image_processor.export_pixelated_image(
+            pixel_data=result["pixel_data"],
+            dimensions=result["dimensions"],
+            pixel_size=pixel_size,
+            export_type=export_type
+        )
         
-        logger.info(f"Export requested: {filename} -> {export_type}")
+        # 获取文件大小
+        export_path = os.path.join(settings.UPLOAD_DIR, export_filename)
+        file_size = os.path.getsize(export_path) if os.path.exists(export_path) else 0
+        
+        logger.info(f"Export completed: {filename} -> {export_filename}")
         
         return {
             "success": True,
             "data": {
                 "download_url": f"/api/download/{export_filename}",
                 "filename": export_filename,
-                "file_size": 0  # TODO: 计算实际文件大小
+                "file_size": file_size
             }
         }
         
@@ -210,9 +218,15 @@ async def export_result(filename: str, export_type: str = Form(...), pixel_size:
 async def download_export(filename: str):
     """下载导出文件"""
     try:
-        # TODO: 实现下载功能
-        # 这里暂时返回404
-        raise HTTPException(status_code=404, detail="Export file not found")
+        file_path = os.path.join(settings.UPLOAD_DIR, filename)
+        if not os.path.exists(file_path):
+            raise HTTPException(status_code=404, detail="Export file not found")
+        
+        return FileResponse(
+            path=file_path,
+            media_type="application/octet-stream",
+            filename=filename
+        )
         
     except HTTPException:
         raise

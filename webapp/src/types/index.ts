@@ -131,7 +131,7 @@ export interface ExportPanelProps {
         width: number;
         height: number;
     };
-    onExportPNG: () => void;
-    onExportSVG: () => void;
+    onExportPNG: (pixelSize?: number) => Promise<void>;
+    onExportJPG: (pixelSize?: number) => Promise<void>;
     disabled?: boolean;
 } 

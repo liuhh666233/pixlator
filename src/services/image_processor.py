@@ -225,19 +225,19 @@ class PixelArtConverter:
         """根据编号方式计算像素编号"""
         if mode == "top_to_bottom":
             # 从上到下，每行编号相同
-            return y
+            return y + 1
         elif mode == "bottom_to_top":
             # 从下到上，每行编号相同
-            return self.height - 1 - y
+            return self.height - y
         elif mode == "diagonal_bottom_left":
             # 从左下角开始沿着对角线
-            return (self.height - 1 - y) + x
+            return (self.height - 1 - y) + x + 1
         elif mode == "diagonal_bottom_right":
             # 从右下角开始沿着对角线（原有方式）
-            return (self.width - 1 - x) + (self.height - 1 - y)
+            return (self.width - 1 - x) + (self.height - 1 - y) + 1
         else:
             # 默认使用右下角对角线方式
-            return (self.width - 1 - x) + (self.height - 1 - y)
+            return (self.width - 1 - x) + (self.height - 1 - y) + 1
     
     def analyze_pixels(self, numbering_mode: NumberingMode = "diagonal_bottom_right"):
         """分析像素数据并生成编号"""
@@ -280,8 +280,8 @@ class PixelArtConverter:
             # 行列方式：使用行数作为编号数量
             max_number = self.height
         
-        # 分析每个编号
-        for number in range(max_number):
+        # 分析每个编号（从1开始）
+        for number in range(1, max_number + 1):
             sequence = []
             
             # 收集该编号的所有像素

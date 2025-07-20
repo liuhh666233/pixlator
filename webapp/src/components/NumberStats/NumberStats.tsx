@@ -53,6 +53,26 @@ const SequenceContainer = styled.div`
   overflow-x: auto;
   min-width: 0;
   flex: 1;
+  max-width: none;
+  
+  /* 自定义滚动条样式 */
+  &::-webkit-scrollbar {
+    height: 4px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 2px;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 2px;
+  }
+  
+  &::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+  }
 `;
 
 const SequenceItem = styled.div<{ color: string; count: number }>`

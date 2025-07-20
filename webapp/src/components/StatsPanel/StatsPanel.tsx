@@ -15,6 +15,7 @@ const PanelContainer = styled.div`
   flex-direction: column;
   gap: 16px;
   padding: 20px;
+  overflow: visible;
 `;
 
 const TabContainer = styled.div`

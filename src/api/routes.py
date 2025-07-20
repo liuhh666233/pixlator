@@ -41,8 +41,8 @@ async def upload_image(file: UploadFile = File(...)):
         logger.info(f"File uploaded successfully: {file_info['filename']}")
         
         return UploadResponse(
+            file_id=file_info["filename"],  # 使用filename作为file_id
             filename=file_info["filename"],
-            original_filename=file_info["original_filename"],
             size=file_info["file_size"],
             preview_url=f"/api/preview/{file_info['filename']}",
             dimensions=file_info["dimensions"]
@@ -59,7 +59,7 @@ async def process_image(request: ProcessRequest):
     """处理图片"""
     try:
         # 获取文件路径
-        file_path = file_manager.get_file_path(request.filename)
+        file_path = file_manager.get_file_path(request.file_id)
         if not file_path:
             raise HTTPException(status_code=404, detail="File not found")
         
@@ -71,9 +71,9 @@ async def process_image(request: ProcessRequest):
         )
         
         # 保存处理结果
-        file_manager.save_processing_result(request.filename, result)
+        file_manager.save_processing_result(request.file_id, result)
         
-        logger.info(f"Image processed successfully: {request.filename}")
+        logger.info(f"Image processed successfully: {request.file_id}")
         
         return ProcessResponse(
             pixel_data=result["pixel_data"],

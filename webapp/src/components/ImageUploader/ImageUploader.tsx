@@ -1,6 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import styled from 'styled-components';
+import { uploadImage } from '../../services/api';
 import type { ImageUploaderProps } from '../../types';
 
 const UploadContainer = styled.div<{ isDragActive: boolean; disabled: boolean }>`
@@ -107,25 +108,13 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
                 });
             }, 100);
 
-            // 这里应该调用实际的API上传
-            // const result = await uploadImage(file);
-
-            // 模拟API调用
-            await new Promise(resolve => setTimeout(resolve, 1000));
+            // 调用实际的API上传
+            const result = await uploadImage(file);
 
             clearInterval(progressInterval);
             setUploadProgress(100);
 
-            // 模拟成功响应
-            const mockResult = {
-                filename: `image_${Date.now()}.${file.name.split('.').pop()}`,
-                original_filename: file.name,
-                file_size: file.size,
-                preview_url: URL.createObjectURL(file),
-                dimensions: { width: 800, height: 600 }, // 这里应该从实际图片获取
-            };
-
-            onUploadSuccess(mockResult);
+            onUploadSuccess(result);
         } catch (err) {
             const errorMsg = err instanceof Error ? err.message : '上传失败';
             setError(errorMsg);

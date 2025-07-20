@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { GlobalStyles } from './styles/GlobalStyles';
 import ImageUploader from './components/ImageUploader';
 import ParameterPanel from './components/ParameterPanel';
+import { processImage } from './services/api';
 import { UploadResponse, ProcessResult } from './types';
 
 const AppContainer = styled.div`
@@ -105,7 +106,7 @@ const App: React.FC = () => {
 
     const handleUploadSuccess = (data: UploadResponse) => {
         setUploadedFile(data);
-        setStatusMessage({ type: 'success', text: `图片上传成功: ${data.original_filename}` });
+        setStatusMessage({ type: 'success', text: `图片上传成功: ${data.filename}` });
         setProcessingResult(null); // 清除之前的结果
     };
 
@@ -123,44 +124,18 @@ const App: React.FC = () => {
         setStatusMessage({ type: 'info', text: '正在处理图片...' });
 
         try {
-            // 模拟处理过程
-            await new Promise(resolve => setTimeout(resolve, 2000));
+            // 调用真实的图片处理API
+            const result = await processImage({
+                file_id: uploadedFile.file_id,
+                max_size: maxSize,
+                color_count: colorCount,
+            });
 
-            // 模拟处理结果
-            const mockResult: ProcessResult = {
-                pixel_data: Array.from({ length: Math.floor(maxSize * 0.8) }, (_, y) =>
-                    Array.from({ length: maxSize }, (_, x) => ({
-                        x,
-                        y,
-                        diagonal: x + y,
-                        color: [Math.floor(Math.random() * 256), Math.floor(Math.random() * 256), Math.floor(Math.random() * 256)] as [number, number, number],
-                        hex: `#${Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0')}`,
-                    }))
-                ),
-                color_stats: Array.from({ length: colorCount || 8 }, (_, i) => ({
-                    color_index: i,
-                    rgb: [Math.floor(Math.random() * 256), Math.floor(Math.random() * 256), Math.floor(Math.random() * 256)] as [number, number, number],
-                    hex: `#${Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0')}`,
-                    count: Math.floor(Math.random() * 100) + 10,
-                    positions: [],
-                })),
-                diagonal_stats: Array.from({ length: 10 }, (_, i) => ({
-                    diagonal_num: i,
-                    sequence: Array.from({ length: Math.floor(Math.random() * 5) + 1 }, () => [
-                        Math.floor(Math.random() * 10),
-                        Math.floor(Math.random() * 10),
-                    ] as [number, number]),
-                })),
-                dimensions: {
-                    width: maxSize,
-                    height: Math.floor(maxSize * 0.8),
-                },
-            };
-
-            setProcessingResult(mockResult);
+            setProcessingResult(result);
             setStatusMessage({ type: 'success', text: '图片处理完成！' });
         } catch (error) {
-            setStatusMessage({ type: 'error', text: '处理失败，请重试' });
+            const errorMessage = error instanceof Error ? error.message : '处理失败，请重试';
+            setStatusMessage({ type: 'error', text: errorMessage });
         } finally {
             setProcessing(false);
         }
@@ -222,9 +197,9 @@ const App: React.FC = () => {
                         ) : uploadedFile ? (
                             <div>
                                 <h3>已上传图片</h3>
-                                <p>文件名: {uploadedFile.original_filename}</p>
+                                <p>文件名: {uploadedFile.filename}</p>
                                 <p>尺寸: {uploadedFile.dimensions.width} × {uploadedFile.dimensions.height}</p>
-                                <p>大小: {(uploadedFile.file_size / 1024).toFixed(1)} KB</p>
+                                <p>大小: {(uploadedFile.size / 1024).toFixed(1)} KB</p>
                                 <p>请设置参数并点击"开始处理"</p>
                             </div>
                         ) : (

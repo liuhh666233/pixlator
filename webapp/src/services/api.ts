@@ -42,27 +42,18 @@ export const uploadImage = async (file: File): Promise<UploadResponse> => {
     const formData = new FormData();
     formData.append('file', file);
 
-    const response = await api.post<ApiResponse<UploadResponse>>('/upload', formData, {
+    const response = await api.post<UploadResponse>('/upload', formData, {
         headers: {
             'Content-Type': 'multipart/form-data',
         },
     });
 
-    if (!response.data.success) {
-        throw new Error(response.data.error || 'Upload failed');
-    }
-
-    return response.data.data!;
+    return response.data;
 };
 
 export const processImage = async (params: ProcessRequest): Promise<ProcessResult> => {
-    const response = await api.post<ApiResponse<ProcessResult>>('/process', params);
-
-    if (!response.data.success) {
-        throw new Error(response.data.error || 'Processing failed');
-    }
-
-    return response.data.data!;
+    const response = await api.post<ProcessResult>('/process', params);
+    return response.data;
 };
 
 export const getHistory = async (): Promise<HistoryItem[]> => {

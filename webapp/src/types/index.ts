@@ -7,9 +7,9 @@ export interface ApiResponse<T = any> {
 
 // 文件上传响应
 export interface UploadResponse {
+    file_id: string;
     filename: string;
-    original_filename: string;
-    file_size: number;
+    size: number;
     preview_url: string;
     dimensions: {
         width: number;
@@ -19,7 +19,7 @@ export interface UploadResponse {
 
 // 图片处理请求参数
 export interface ProcessRequest {
-    filename: string;
+    file_id: string;
     max_size: number;
     color_count?: number;
 }

@@ -59,15 +59,6 @@ const CenterPanel = styled.div`
   gap: 20px;
 `;
 
-const RightPanel = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  align-items: flex-start;
-  justify-content: flex-start;
-`;
-
-
 
 const Placeholder = styled.div`
   text-align: center;
@@ -105,20 +96,6 @@ const StatusMessage = styled.div<{ type: 'success' | 'error' | 'info' }>`
     }}
 `;
 
-const ToggleButton = styled.button<{ active: boolean }>`
-  padding: 8px 16px;
-  border: 1px solid ${props => props.active ? '#2196f3' : '#ddd'};
-  background: ${props => props.active ? '#2196f3' : 'white'};
-  color: ${props => props.active ? 'white' : '#666'};
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 14px;
-  transition: all 0.2s ease;
-
-  &:hover {
-    background: ${props => props.active ? '#1976d2' : '#f5f5f5'};
-  }
-`;
 
 const App: React.FC = () => {
     const [uploadedFile, setUploadedFile] = useState<UploadResponse | null>(null);

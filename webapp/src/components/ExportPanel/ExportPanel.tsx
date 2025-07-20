@@ -182,113 +182,112 @@ const InfoValue = styled.span`
 type ExportFormat = 'png' | 'jpg';
 
 const ExportPanel: React.FC<ExportPanelProps> = ({
-    pixelData,
-    dimensions,
-    onExportPNG,
-    onExportJPG,
-    disabled = false,
+  dimensions,
+  onExportPNG,
+  onExportJPG,
+  disabled = false,
 }) => {
-    const [exportFormat, setExportFormat] = useState<ExportFormat>('png');
-    const [pixelSize, setPixelSize] = useState(16);
-    const [exporting, setExporting] = useState(false);
+  const [exportFormat, setExportFormat] = useState<ExportFormat>('png');
+  const [pixelSize, setPixelSize] = useState(16);
+  const [exporting, setExporting] = useState(false);
 
-    const handleFormatChange = (format: ExportFormat) => {
-        setExportFormat(format);
-    };
+  const handleFormatChange = (format: ExportFormat) => {
+    setExportFormat(format);
+  };
 
-    const handlePixelSizeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const value = parseInt(e.target.value);
-        setPixelSize(value);
-    };
+  const handlePixelSizeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = parseInt(e.target.value);
+    setPixelSize(value);
+  };
 
-    const handleExport = async () => {
-        if (disabled || exporting) return;
+  const handleExport = async () => {
+    if (disabled || exporting) return;
 
-        setExporting(true);
-        try {
-            if (exportFormat === 'png') {
-                await onExportPNG(pixelSize);
-            } else {
-                await onExportJPG(pixelSize);
-            }
-        } catch (error) {
-            console.error('Export failed:', error);
-        } finally {
-            setExporting(false);
-        }
-    };
+    setExporting(true);
+    try {
+      if (exportFormat === 'png') {
+        await onExportPNG(pixelSize);
+      } else {
+        await onExportJPG(pixelSize);
+      }
+    } catch (error) {
+      console.error('Export failed:', error);
+    } finally {
+      setExporting(false);
+    }
+  };
 
-    // 计算预览信息
-    const exportWidth = dimensions.width * pixelSize;
-    const exportHeight = dimensions.height * pixelSize;
-    const totalPixels = dimensions.width * dimensions.height;
+  // 计算预览信息
+  const exportWidth = dimensions.width * pixelSize;
+  const exportHeight = dimensions.height * pixelSize;
+  const totalPixels = dimensions.width * dimensions.height;
 
-    return (
-        <Panel>
-            <Title>导出设置</Title>
+  return (
+    <Panel>
+      <Title>导出设置</Title>
 
-            <ExportOptions>
-                <OptionGroup>
-                    <Label>导出格式</Label>
-                    <FormatSelector>
-                        <FormatButton
-                            selected={exportFormat === 'png'}
-                            onClick={() => handleFormatChange('png')}
-                        >
-                            PNG
-                        </FormatButton>
-                        <FormatButton
-                            selected={exportFormat === 'jpg'}
-                            onClick={() => handleFormatChange('jpg')}
-                        >
-                            JPG
-                        </FormatButton>
-                    </FormatSelector>
-                </OptionGroup>
+      <ExportOptions>
+        <OptionGroup>
+          <Label>导出格式</Label>
+          <FormatSelector>
+            <FormatButton
+              selected={exportFormat === 'png'}
+              onClick={() => handleFormatChange('png')}
+            >
+              PNG
+            </FormatButton>
+            <FormatButton
+              selected={exportFormat === 'jpg'}
+              onClick={() => handleFormatChange('jpg')}
+            >
+              JPG
+            </FormatButton>
+          </FormatSelector>
+        </OptionGroup>
 
-                <OptionGroup>
-                    <Label>像素大小: {pixelSize}px</Label>
-                    <SliderContainer>
-                        <Slider
-                            type="range"
-                            min="4"
-                            max="32"
-                            value={pixelSize}
-                            onChange={handlePixelSizeChange}
-                            disabled={disabled}
-                        />
-                        <Value>{pixelSize}</Value>
-                    </SliderContainer>
-                </OptionGroup>
+        <OptionGroup>
+          <Label>像素大小: {pixelSize}px</Label>
+          <SliderContainer>
+            <Slider
+              type="range"
+              min="4"
+              max="32"
+              value={pixelSize}
+              onChange={handlePixelSizeChange}
+              disabled={disabled}
+            />
+            <Value>{pixelSize}</Value>
+          </SliderContainer>
+        </OptionGroup>
 
-                <ExportButton
-                    onClick={handleExport}
-                    disabled={disabled}
-                    exporting={exporting}
-                >
-                    <ButtonContent>
-                        {exporting && <LoadingSpinner />}
-                        {exporting ? '导出中...' : `导出 ${exportFormat.toUpperCase()}`}
-                    </ButtonContent>
-                </ExportButton>
+        <ExportButton
+          onClick={handleExport}
+          disabled={disabled}
+          exporting={exporting}
+        >
+          <ButtonContent>
+            {exporting && <LoadingSpinner />}
+            {exporting ? '导出中...' : `导出 ${exportFormat.toUpperCase()}`}
+          </ButtonContent>
+        </ExportButton>
 
-                <PreviewInfo>
-                    <InfoRow>
-                        <InfoLabel>导出尺寸</InfoLabel>
-                        <InfoValue>{exportWidth} × {exportHeight}px</InfoValue>
-                    </InfoRow>
-                    <InfoRow>
-                        <InfoLabel>像素数量</InfoLabel>
-                        <InfoValue>{totalPixels}</InfoValue>
-                    </InfoRow>
-                    <InfoRow>
-                        <InfoLabel>文件格式</InfoLabel>
-                        <InfoValue>{exportFormat.toUpperCase()}</InfoValue>
-                    </InfoRow>
-                </PreviewInfo>
-            </ExportOptions>
-        </Panel>
-    );
+        <PreviewInfo>
+          <InfoRow>
+            <InfoLabel>导出尺寸</InfoLabel>
+            <InfoValue>{exportWidth} × {exportHeight}px</InfoValue>
+          </InfoRow>
+          <InfoRow>
+            <InfoLabel>像素数量</InfoLabel>
+            <InfoValue>{totalPixels}</InfoValue>
+          </InfoRow>
+          <InfoRow>
+            <InfoLabel>文件格式</InfoLabel>
+            <InfoValue>{exportFormat.toUpperCase()}</InfoValue>
+          </InfoRow>
+        </PreviewInfo>
+      </ExportOptions>
+    </Panel>
+  );
 };
 
 export default ExportPanel; 

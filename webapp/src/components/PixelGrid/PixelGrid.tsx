@@ -15,13 +15,6 @@ const GridContainer = styled.div`
   width: 100%;
 `;
 
-const GridTitle = styled.h3`
-  margin: 0;
-  color: #333;
-  font-size: 18px;
-  font-weight: 600;
-`;
-
 const PixelGridWrapper = styled.div<{ width: number; height: number; pixelSize: number }>`
   display: grid;
   grid-template-columns: repeat(${props => props.width}, ${props => props.pixelSize}px);

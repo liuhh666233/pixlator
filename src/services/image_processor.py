@@ -174,7 +174,7 @@ class DiagonalPixelArtConverter:
             row = []
             for x in range(self.width):
                 r, g, b = self.img.getpixel((x, y))
-                hex_color = f"{r:02X}{g:02X}{b:02X}"
+                hex_color = f"#{r:02X}{g:02X}{b:02X}"
                 
                 # 对角线编号：从右下角(0)开始，向左上方递增
                 diagonal_num = (self.width - 1 - x) + (self.height - 1 - y)

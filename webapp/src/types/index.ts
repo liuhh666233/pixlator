@@ -82,8 +82,10 @@ export interface PixelGridProps {
         width: number;
         height: number;
     };
+    pixelSize?: number;
     showDiagonals?: boolean;
     onPixelClick?: (pixel: PixelData) => void;
+    onPixelSizeChange?: (size: number) => void;
     highlightedColor?: string;
     highlightedDiagonal?: number;
 }

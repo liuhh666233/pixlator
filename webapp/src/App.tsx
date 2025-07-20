@@ -3,8 +3,11 @@ import styled from 'styled-components';
 import { GlobalStyles } from './styles/GlobalStyles';
 import ImageUploader from './components/ImageUploader';
 import ParameterPanel from './components/ParameterPanel';
+import PixelGrid from './components/PixelGrid/PixelGrid';
+import ColorStats from './components/ColorStats/ColorStats';
+import DiagonalStats from './components/DiagonalStats/DiagonalStats';
 import { processImage } from './services/api';
-import { UploadResponse, ProcessResult } from './types';
+import { UploadResponse, ProcessResult, ColorStat, DiagonalStat } from './types';
 
 const AppContainer = styled.div`
   min-height: 100vh;
@@ -31,11 +34,16 @@ const Subtitle = styled.p`
 `;
 
 const MainContent = styled.main`
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: 1fr 2fr;
-  gap: 30px;
+  grid-template-columns: 1fr 2fr 1fr;
+  gap: 20px;
+  
+  @media (max-width: 1200px) {
+    grid-template-columns: 1fr 2fr;
+    gap: 20px;
+  }
   
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
@@ -49,15 +57,16 @@ const LeftPanel = styled.div`
   gap: 20px;
 `;
 
-const RightPanel = styled.div`
-  background: white;
-  border-radius: 8px;
-  padding: 24px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  min-height: 400px;
+const CenterPanel = styled.div`
   display: flex;
-  align-items: center;
-  justify-content: center;
+  flex-direction: column;
+  gap: 20px;
+`;
+
+const RightPanel = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 `;
 
 const Placeholder = styled.div`
@@ -96,6 +105,21 @@ const StatusMessage = styled.div<{ type: 'success' | 'error' | 'info' }>`
     }}
 `;
 
+const ToggleButton = styled.button<{ active: boolean }>`
+  padding: 8px 16px;
+  border: 1px solid ${props => props.active ? '#2196f3' : '#ddd'};
+  background: ${props => props.active ? '#2196f3' : 'white'};
+  color: ${props => props.active ? 'white' : '#666'};
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: ${props => props.active ? '#1976d2' : '#f5f5f5'};
+  }
+`;
+
 const App: React.FC = () => {
     const [uploadedFile, setUploadedFile] = useState<UploadResponse | null>(null);
     const [processingResult, setProcessingResult] = useState<ProcessResult | null>(null);
@@ -103,6 +127,10 @@ const App: React.FC = () => {
     const [colorCount, setColorCount] = useState<number | undefined>(undefined);
     const [processing, setProcessing] = useState(false);
     const [statusMessage, setStatusMessage] = useState<{ type: 'success' | 'error' | 'info'; text: string } | null>(null);
+    const [showDiagonals, setShowDiagonals] = useState(false);
+    const [pixelSize, setPixelSize] = useState(16);
+    const [highlightedColor, setHighlightedColor] = useState<string | null>(null);
+    const [highlightedDiagonal, setHighlightedDiagonal] = useState<number | null>(null);
 
     const handleUploadSuccess = (data: UploadResponse) => {
         setUploadedFile(data);
@@ -145,6 +173,25 @@ const App: React.FC = () => {
         setStatusMessage(null);
     };
 
+    const handleColorClick = (color: ColorStat) => {
+        setHighlightedColor(color.hex);
+        setHighlightedDiagonal(null);
+    };
+
+    const handleDiagonalClick = (diagonal: DiagonalStat) => {
+        setHighlightedDiagonal(diagonal.diagonal_num);
+        setHighlightedColor(null);
+    };
+
+    const handlePixelClick = (pixel: any) => {
+        console.log('Pixel clicked:', pixel);
+    };
+
+    const clearHighlights = () => {
+        setHighlightedColor(null);
+        setHighlightedDiagonal(null);
+    };
+
     return (
         <>
             <GlobalStyles />
@@ -180,22 +227,44 @@ const App: React.FC = () => {
                         />
                     </LeftPanel>
 
-                    <RightPanel>
+                    <CenterPanel>
                         {processing ? (
                             <Placeholder>
                                 <div>正在处理图片...</div>
                                 <div style={{ marginTop: '16px' }} className="loading"></div>
                             </Placeholder>
                         ) : processingResult ? (
-                            <div>
-                                <h3>处理结果</h3>
-                                <p>尺寸: {processingResult.dimensions.width} × {processingResult.dimensions.height}</p>
-                                <p>颜色数量: {processingResult.color_stats.length}</p>
-                                <p>对角线数量: {processingResult.diagonal_stats.length}</p>
-                                {/* 这里将来会显示像素网格 */}
-                            </div>
+                            <>
+                                <PixelGrid
+                                    pixelData={processingResult.pixel_data}
+                                    dimensions={processingResult.dimensions}
+                                    pixelSize={pixelSize}
+                                    showDiagonals={showDiagonals}
+                                    onPixelClick={handlePixelClick}
+                                    onPixelSizeChange={setPixelSize}
+                                    highlightedColor={highlightedColor || undefined}
+                                    highlightedDiagonal={highlightedDiagonal || undefined}
+                                />
+
+                                <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
+                                    <ToggleButton
+                                        active={showDiagonals}
+                                        onClick={() => setShowDiagonals(!showDiagonals)}
+                                    >
+                                        {showDiagonals ? '隐藏' : '显示'}对角线编号
+                                    </ToggleButton>
+                                    {(highlightedColor || highlightedDiagonal !== null) && (
+                                        <ToggleButton
+                                            active={false}
+                                            onClick={clearHighlights}
+                                        >
+                                            清除高亮
+                                        </ToggleButton>
+                                    )}
+                                </div>
+                            </>
                         ) : uploadedFile ? (
-                            <div>
+                            <div style={{ background: 'white', padding: '24px', borderRadius: '8px', textAlign: 'center' }}>
                                 <h3>已上传图片</h3>
                                 <p>文件名: {uploadedFile.filename}</p>
                                 <p>尺寸: {uploadedFile.dimensions.width} × {uploadedFile.dimensions.height}</p>
@@ -206,6 +275,17 @@ const App: React.FC = () => {
                             <Placeholder>
                                 请上传图片开始处理
                             </Placeholder>
+                        )}
+                    </CenterPanel>
+
+                    <RightPanel>
+                        {/* 暂时隐藏统计面板，专注于像素网格显示 */}
+                        {processingResult && (
+                            <div style={{ background: 'white', padding: '16px', borderRadius: '8px' }}>
+                                <h4>统计信息 (暂未显示)</h4>
+                                <p>颜色数量: {processingResult.color_stats.length}</p>
+                                <p>对角线数量: {processingResult.diagonal_stats.length}</p>
+                            </div>
                         )}
                     </RightPanel>
                 </MainContent>

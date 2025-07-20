@@ -2,16 +2,13 @@ import os
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, FileResponse
 from datetime import datetime
 from loguru import logger
+from pathlib import Path
 
-# 导入配置和服务
+
 from config import settings
-from services.file_manager import FileManager
-from services.image_processor import ImageProcessor
-
-# 导入路由
 from api.routes import router as api_router
 
 # 配置loguru日志
@@ -55,6 +52,19 @@ os.makedirs(uploads_dir, exist_ok=True)
 
 # 挂载静态文件服务
 app.mount("/uploads", StaticFiles(directory=uploads_dir), name="uploads")
+
+DEV_FRONTEND_PATH = Path(
+    os.getenv("PIXELATOR_FRONTEND", str(Path(__file__).parent / "webapp" / "dist"))
+)
+app.mount("/assets", StaticFiles(directory=DEV_FRONTEND_PATH / "assets", html=True))
+
+@app.get("/")
+async def serve_ui():
+    return FileResponse(DEV_FRONTEND_PATH / "index.html")
+
+@app.get("/favicon.svg")
+async def serve_icon():
+    return FileResponse(DEV_FRONTEND_PATH / "favicon.svg")
 
 # 全局异常处理器
 @app.exception_handler(HTTPException)

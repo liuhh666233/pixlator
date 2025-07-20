@@ -16,7 +16,7 @@
     flake-parts.lib.mkFlake { inherit inputs; }{
       systems = [ "x86_64-linux" ];
 
-      imports = [ ./nix/development.nix ];
+      imports = [ ./nix/development.nix ./nix/release.nix ];
 
       perSystem = { system, config, pkgs-dev, ... }: {
         # With this, you can run `nix fmt` to format all nix files in this repo.

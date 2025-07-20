@@ -49,6 +49,14 @@ in {
           # Web Application
           fastapi
           uvicorn
+          python-multipart
+          python-jose
+          passlib
+          bcrypt
+
+          # Image Processing
+          pillow
+          scikit-learn
         ]));
 
     in pkgs-dev.mkShell.override {

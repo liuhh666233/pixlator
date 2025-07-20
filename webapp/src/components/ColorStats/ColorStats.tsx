@@ -3,39 +3,34 @@ import styled from 'styled-components';
 import type { ColorStatsProps } from '../../types';
 
 const StatsContainer = styled.div`
-  background: white;
-  border-radius: 8px;
-  padding: 20px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   width: 100%;
-  max-width: 800px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 `;
 
-const Title = styled.h3`
-  margin: 0 0 16px 0;
-  color: #333;
-  font-size: 18px;
-  font-weight: 600;
-`;
+
 
 const ColorList = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  max-height: 400px;
+  gap: 4px;
   overflow-y: auto;
+  max-height: 70vh;
+  min-height: 400px;
 `;
 
 const ColorBar = styled.div<{ highlighted: boolean }>`
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px;
+  gap: 6px;
+  padding: 6px;
   border-radius: 4px;
   background: ${props => props.highlighted ? '#e3f2fd' : 'transparent'};
   border: 2px solid ${props => props.highlighted ? '#2196f3' : 'transparent'};
   cursor: pointer;
   transition: all 0.2s ease;
+  min-width: 0;
 
   &:hover {
     background: #f0f8ff;
@@ -43,9 +38,9 @@ const ColorBar = styled.div<{ highlighted: boolean }>`
 `;
 
 const ColorSwatch = styled.div<{ color: string }>`
-  width: 24px;
-  height: 24px;
-  border-radius: 3px;
+  width: 16px;
+  height: 16px;
+  border-radius: 2px;
   background-color: ${props => props.color};
   border: 1px solid #ddd;
   flex-shrink: 0;
@@ -53,9 +48,9 @@ const ColorSwatch = styled.div<{ color: string }>`
 
 const ColorBarContainer = styled.div`
   flex: 1;
-  height: 24px;
+  height: 16px;
   background: #f0f0f0;
-  border-radius: 3px;
+  border-radius: 2px;
   overflow: hidden;
   position: relative;
 `;
@@ -70,47 +65,34 @@ const ColorBarFill = styled.div<{ width: number; color: string }>`
 const ColorInfo = styled.div`
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   min-width: 0;
+  flex-shrink: 0;
 `;
 
 const ColorHex = styled.div`
   font-family: 'Courier New', monospace;
   font-weight: 600;
   color: #333;
-  font-size: 12px;
-  min-width: 60px;
+  font-size: 11px;
+  min-width: 50px;
 `;
 
 const ColorPercent = styled.div`
-  font-size: 11px;
+  font-size: 10px;
   color: #666;
-  min-width: 40px;
+  min-width: 35px;
   text-align: right;
 `;
 
 const ColorCount = styled.div`
-  font-size: 11px;
+  font-size: 10px;
   color: #999;
-  min-width: 50px;
+  min-width: 40px;
   text-align: right;
 `;
 
-const Summary = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 16px;
-  padding-top: 16px;
-  border-top: 1px solid #eee;
-  font-size: 14px;
-  color: #666;
-`;
 
-const TotalPixels = styled.span`
-  font-weight: 600;
-  color: #2196f3;
-`;
 
 const EmptyState = styled.div`
   text-align: center;
@@ -135,7 +117,6 @@ const ColorStats: React.FC<ColorStatsProps> = ({
   if (!colorStats || colorStats.length === 0) {
     return (
       <StatsContainer>
-        <Title>颜色统计</Title>
         <EmptyState>
           暂无颜色数据
         </EmptyState>
@@ -145,8 +126,6 @@ const ColorStats: React.FC<ColorStatsProps> = ({
 
   return (
     <StatsContainer>
-      <Title>颜色统计 ({colorStats.length} 种颜色)</Title>
-
       <ColorList>
         {colorStats.map((color) => {
           const percentage = ((color.count / totalPixels) * 100).toFixed(1);
@@ -173,11 +152,6 @@ const ColorStats: React.FC<ColorStatsProps> = ({
           );
         })}
       </ColorList>
-
-      <Summary>
-        <span>总像素数:</span>
-        <TotalPixels>{totalPixels}</TotalPixels>
-      </Summary>
     </StatsContainer>
   );
 };

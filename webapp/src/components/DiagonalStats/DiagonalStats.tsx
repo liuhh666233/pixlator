@@ -3,24 +3,13 @@ import styled from 'styled-components';
 import type { DiagonalStatsProps } from '../../types';
 
 const StatsContainer = styled.div`
-  background: white;
-  border-radius: 8px;
-  padding: 20px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   width: 100%;
-  min-width: 280px;
-  max-width: 400px;
   display: flex;
   flex-direction: column;
   gap: 16px;
 `;
 
-const Title = styled.h3`
-  margin: 0;
-  color: #333;
-  font-size: 18px;
-  font-weight: 600;
-`;
+
 
 const DiagonalList = styled.div`
   display: flex;
@@ -106,18 +95,7 @@ const EmptyState = styled.div`
   font-size: 14px;
 `;
 
-const Summary = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 14px;
-  color: #666;
-`;
 
-const TotalDiagonals = styled.span`
-  font-weight: 600;
-  color: #2196f3;
-`;
 
 const DiagonalStats: React.FC<DiagonalStatsProps> = ({
   diagonalStats,
@@ -134,7 +112,6 @@ const DiagonalStats: React.FC<DiagonalStatsProps> = ({
   if (!diagonalStats || diagonalStats.length === 0) {
     return (
       <StatsContainer>
-        <Title>对角线统计</Title>
         <EmptyState>
           暂无对角线数据
         </EmptyState>
@@ -144,8 +121,6 @@ const DiagonalStats: React.FC<DiagonalStatsProps> = ({
 
   return (
     <StatsContainer>
-      <Title>对角线统计 ({diagonalStats.length} 条对角线)</Title>
-
       <DiagonalList>
         {diagonalStats.map((diagonal) => (
           <DiagonalItem
@@ -177,11 +152,6 @@ const DiagonalStats: React.FC<DiagonalStatsProps> = ({
           </DiagonalItem>
         ))}
       </DiagonalList>
-
-      <Summary>
-        <span>总对角线数:</span>
-        <TotalDiagonals>{diagonalStats.length}</TotalDiagonals>
-      </Summary>
     </StatsContainer>
   );
 };

@@ -4,8 +4,7 @@ import { GlobalStyles } from './styles/GlobalStyles';
 import ImageUploader from './components/ImageUploader';
 import ParameterPanel from './components/ParameterPanel';
 import PixelGrid from './components/PixelGrid/PixelGrid';
-import ColorStats from './components/ColorStats/ColorStats';
-import DiagonalStats from './components/DiagonalStats/DiagonalStats';
+import StatsPanel from './components/StatsPanel/StatsPanel';
 import { processImage } from './services/api';
 import { UploadResponse, ProcessResult, ColorStat, DiagonalStat } from './types';
 
@@ -66,14 +65,7 @@ const RightPanel = styled.div`
   justify-content: flex-start;
 `;
 
-const StatsSection = styled.div`
-  margin-top: 30px;
-  display: flex;
-  justify-content: center;
-  max-width: 800px;
-  margin-left: auto;
-  margin-right: auto;
-`;
+
 
 const Placeholder = styled.div`
   text-align: center;
@@ -281,25 +273,19 @@ const App: React.FC = () => {
 
                     <RightPanel>
                         {processingResult && (
-                            <DiagonalStats
-                                diagonalStats={processingResult.diagonal_stats}
+                            <StatsPanel
                                 colorStats={processingResult.color_stats}
+                                diagonalStats={processingResult.diagonal_stats}
+                                onColorClick={handleColorClick}
                                 onDiagonalClick={handleDiagonalClick}
+                                highlightedColor={highlightedColor || undefined}
                                 highlightedDiagonal={highlightedDiagonal || undefined}
                             />
                         )}
                     </RightPanel>
                 </MainContent>
 
-                {processingResult && (
-                    <StatsSection>
-                        <ColorStats
-                            colorStats={processingResult.color_stats}
-                            onColorClick={handleColorClick}
-                            highlightedColor={highlightedColor || undefined}
-                        />
-                    </StatsSection>
-                )}
+
             </AppContainer>
         </>
     );

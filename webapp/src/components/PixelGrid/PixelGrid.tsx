@@ -30,8 +30,9 @@ const PixelGridWrapper = styled.div<{ width: number; height: number; pixelSize: 
   border-radius: 4px;
   overflow: auto;
   max-width: 100%;
-  max-height: 600px;
+  max-height: 70vh;
   padding: 10px;
+  justify-self: center;
 `;
 
 const Pixel = styled.div<{
@@ -172,6 +173,7 @@ const PixelGrid: React.FC<PixelGridProps> = ({
   showDiagonals = false,
   onPixelClick,
   onPixelSizeChange,
+  onShowDiagonalsChange,
   highlightedColor,
   highlightedDiagonal,
 }) => {
@@ -219,8 +221,11 @@ const PixelGrid: React.FC<PixelGridProps> = ({
           <SizeValue>{pixelSize}px</SizeValue>
         </ControlGroup>
 
-        <ToggleButton active={showDiagonals}>
-          显示对角线编号
+        <ToggleButton
+          active={showDiagonals}
+          onClick={() => onShowDiagonalsChange?.(!showDiagonals)}
+        >
+          {showDiagonals ? '隐藏' : '显示'}对角线编号
         </ToggleButton>
       </Controls>
 

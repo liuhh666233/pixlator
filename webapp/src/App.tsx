@@ -34,16 +34,11 @@ const Subtitle = styled.p`
 `;
 
 const MainContent = styled.main`
-  max-width: 1400px;
+  max-width: 1200px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: 1fr 2fr 1fr;
-  gap: 20px;
-  
-  @media (max-width: 1200px) {
-    grid-template-columns: 1fr 2fr;
-    gap: 20px;
-  }
+  grid-template-columns: 1fr 2fr;
+  gap: 30px;
   
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
@@ -63,10 +58,16 @@ const CenterPanel = styled.div`
   gap: 20px;
 `;
 
-const RightPanel = styled.div`
-  display: flex;
-  flex-direction: column;
+const StatsSection = styled.div`
+  margin-top: 30px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 20px;
+  
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
 `;
 
 const Placeholder = styled.div`
@@ -242,26 +243,21 @@ const App: React.FC = () => {
                                     showDiagonals={showDiagonals}
                                     onPixelClick={handlePixelClick}
                                     onPixelSizeChange={setPixelSize}
+                                    onShowDiagonalsChange={setShowDiagonals}
                                     highlightedColor={highlightedColor || undefined}
                                     highlightedDiagonal={highlightedDiagonal || undefined}
                                 />
 
-                                <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
-                                    <ToggleButton
-                                        active={showDiagonals}
-                                        onClick={() => setShowDiagonals(!showDiagonals)}
-                                    >
-                                        {showDiagonals ? '隐藏' : '显示'}对角线编号
-                                    </ToggleButton>
-                                    {(highlightedColor || highlightedDiagonal !== null) && (
+                                {(highlightedColor || highlightedDiagonal !== null) && (
+                                    <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
                                         <ToggleButton
                                             active={false}
                                             onClick={clearHighlights}
                                         >
                                             清除高亮
                                         </ToggleButton>
-                                    )}
-                                </div>
+                                    </div>
+                                )}
                             </>
                         ) : uploadedFile ? (
                             <div style={{ background: 'white', padding: '24px', borderRadius: '8px', textAlign: 'center' }}>
@@ -277,18 +273,23 @@ const App: React.FC = () => {
                             </Placeholder>
                         )}
                     </CenterPanel>
-
-                    <RightPanel>
-                        {/* 暂时隐藏统计面板，专注于像素网格显示 */}
-                        {processingResult && (
-                            <div style={{ background: 'white', padding: '16px', borderRadius: '8px' }}>
-                                <h4>统计信息 (暂未显示)</h4>
-                                <p>颜色数量: {processingResult.color_stats.length}</p>
-                                <p>对角线数量: {processingResult.diagonal_stats.length}</p>
-                            </div>
-                        )}
-                    </RightPanel>
                 </MainContent>
+
+                {processingResult && (
+                    <StatsSection>
+                        <ColorStats
+                            colorStats={processingResult.color_stats}
+                            onColorClick={handleColorClick}
+                            highlightedColor={highlightedColor || undefined}
+                        />
+
+                        <DiagonalStats
+                            diagonalStats={processingResult.diagonal_stats}
+                            onDiagonalClick={handleDiagonalClick}
+                            highlightedDiagonal={highlightedDiagonal || undefined}
+                        />
+                    </StatsSection>
+                )}
             </AppContainer>
         </>
     );

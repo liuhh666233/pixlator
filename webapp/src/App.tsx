@@ -243,18 +243,8 @@ const App: React.FC = () => {
                                     onShowDiagonalsChange={setShowDiagonals}
                                     highlightedColor={highlightedColor || undefined}
                                     highlightedDiagonal={highlightedDiagonal || undefined}
+                                    onClearHighlights={clearHighlights}
                                 />
-
-                                {(highlightedColor || highlightedDiagonal !== null) && (
-                                    <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
-                                        <ToggleButton
-                                            active={false}
-                                            onClick={clearHighlights}
-                                        >
-                                            清除高亮
-                                        </ToggleButton>
-                                    </div>
-                                )}
                             </>
                         ) : uploadedFile ? (
                             <div style={{ background: 'white', padding: '24px', borderRadius: '8px', textAlign: 'center' }}>

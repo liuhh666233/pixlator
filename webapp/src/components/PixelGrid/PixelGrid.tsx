@@ -28,11 +28,9 @@ const PixelGridWrapper = styled.div<{ width: number; height: number; pixelSize: 
   background: #e0e0e0;
   border: 1px solid #ccc;
   border-radius: 4px;
-  overflow: auto;
-  max-width: 100%;
-  max-height: 70vh;
   padding: 10px;
-  justify-self: center;
+  margin: 0 auto;
+  max-height: 70vh;
 `;
 
 const Pixel = styled.div<{
@@ -98,6 +96,14 @@ const Controls = styled.div`
   gap: 12px;
   align-items: center;
   flex-wrap: wrap;
+  background: white;
+  padding: 16px 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 16px;
+  width: 100%;
+  box-sizing: border-box;
+  justify-content: space-between;
 `;
 
 const ControlGroup = styled.div`
@@ -176,6 +182,7 @@ const PixelGrid: React.FC<PixelGridProps> = ({
   onShowDiagonalsChange,
   highlightedColor,
   highlightedDiagonal,
+  onClearHighlights,
 }) => {
   const handlePixelClick = (pixel: any) => {
     if (onPixelClick) {
@@ -205,69 +212,82 @@ const PixelGrid: React.FC<PixelGridProps> = ({
   }
 
   return (
-    <GridContainer>
-      <GridTitle>像素网格</GridTitle>
-
+    <>
       <Controls>
-        <ControlGroup>
-          <ControlLabel>像素大小:</ControlLabel>
-          <SizeSlider
-            type="range"
-            min="4"
-            max="32"
-            value={pixelSize}
-            onChange={(e) => onPixelSizeChange?.(parseInt(e.target.value))}
-          />
-          <SizeValue>{pixelSize}px</SizeValue>
-        </ControlGroup>
+        <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+          <ControlGroup>
+            <ControlLabel>像素大小:</ControlLabel>
+            <SizeSlider
+              type="range"
+              min="4"
+              max="32"
+              value={pixelSize}
+              onChange={(e) => onPixelSizeChange?.(parseInt(e.target.value))}
+            />
+            <SizeValue>{pixelSize}px</SizeValue>
+          </ControlGroup>
 
-        <ToggleButton
-          active={showDiagonals}
-          onClick={() => onShowDiagonalsChange?.(!showDiagonals)}
-        >
-          {showDiagonals ? '隐藏' : '显示'}对角线编号
-        </ToggleButton>
+          <ToggleButton
+            active={showDiagonals}
+            onClick={() => onShowDiagonalsChange?.(!showDiagonals)}
+          >
+            {showDiagonals ? '隐藏' : '显示'}对角线编号
+          </ToggleButton>
+        </div>
+
+        {(highlightedColor || highlightedDiagonal !== null) && (
+          <ToggleButton
+            active={false}
+            onClick={onClearHighlights}
+          >
+            清除高亮
+          </ToggleButton>
+        )}
       </Controls>
 
-      <PixelGridWrapper
-        width={dimensions.width}
-        height={dimensions.height}
-        pixelSize={pixelSize}
-      >
-        {pixelData.map((row, y) =>
-          row.map((pixel, x) => (
-            <Pixel
-              key={`${x}-${y}`}
-              color={pixel.hex}
-              highlighted={isPixelHighlighted(pixel)}
-              showDiagonals={showDiagonals}
-              data-diagonal={pixel.diagonal}
-              onClick={() => handlePixelClick(pixel)}
-              title={`位置: (${x}, ${y}) | 对角线: ${pixel.diagonal} | 颜色: ${pixel.hex}`}
-            />
-          ))
-        )}
-      </PixelGridWrapper>
+      <GridContainer>
+        <GridTitle>像素网格</GridTitle>
 
+        <div style={{ width: '100%', overflow: 'auto' }}>
+          <PixelGridWrapper
+            width={dimensions.width}
+            height={dimensions.height}
+            pixelSize={pixelSize}
+          >
+            {pixelData.map((row, y) =>
+              row.map((pixel, x) => (
+                <Pixel
+                  key={`${x}-${y}`}
+                  color={pixel.hex}
+                  highlighted={isPixelHighlighted(pixel)}
+                  showDiagonals={showDiagonals}
+                  data-diagonal={pixel.diagonal}
+                  onClick={() => handlePixelClick(pixel)}
+                  title={`位置: (${x}, ${y}) | 对角线: ${pixel.diagonal} | 颜色: ${pixel.hex}`}
+                />
+              ))
+            )}
+          </PixelGridWrapper>
+        </div>
 
-
-      <GridInfo>
-        <InfoItem>
-          <InfoLabel>尺寸</InfoLabel>
-          <InfoValue>{dimensions.width} × {dimensions.height}</InfoValue>
-        </InfoItem>
-        <InfoItem>
-          <InfoLabel>像素总数</InfoLabel>
-          <InfoValue>{dimensions.width * dimensions.height}</InfoValue>
-        </InfoItem>
-        <InfoItem>
-          <InfoLabel>对角线数量</InfoLabel>
-          <InfoValue>
-            {Math.max(...pixelData.flat().map(p => p.diagonal)) + 1}
-          </InfoValue>
-        </InfoItem>
-      </GridInfo>
-    </GridContainer>
+        <GridInfo>
+          <InfoItem>
+            <InfoLabel>尺寸</InfoLabel>
+            <InfoValue>{dimensions.width} × {dimensions.height}</InfoValue>
+          </InfoItem>
+          <InfoItem>
+            <InfoLabel>像素总数</InfoLabel>
+            <InfoValue>{dimensions.width * dimensions.height}</InfoValue>
+          </InfoItem>
+          <InfoItem>
+            <InfoLabel>对角线数量</InfoLabel>
+            <InfoValue>
+              {Math.max(...pixelData.flat().map(p => p.diagonal)) + 1}
+            </InfoValue>
+          </InfoItem>
+        </GridInfo>
+      </GridContainer>
+    </>
   );
 };
 

@@ -89,6 +89,7 @@ export interface PixelGridProps {
     onShowDiagonalsChange?: (show: boolean) => void;
     highlightedColor?: string;
     highlightedDiagonal?: number;
+    onClearHighlights?: () => void;
 }
 
 export interface ParameterPanelProps {

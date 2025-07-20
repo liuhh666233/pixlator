@@ -16,7 +16,7 @@ const NumberList = styled.div`
   flex-direction: column;
   gap: 4px;
   overflow-y: auto;
-  max-height: 90vh;
+  max-height: 75vh;
   min-height: 400px;
 `;
 

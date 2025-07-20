@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import styled from 'styled-components';
 import type { NumberStatsProps } from '../../types';
 
@@ -16,7 +16,7 @@ const NumberList = styled.div`
   flex-direction: column;
   gap: 4px;
   overflow-y: auto;
-  max-height: 70vh;
+  max-height: 90vh;
   min-height: 400px;
 `;
 
@@ -95,6 +95,28 @@ const EmptyState = styled.div`
   font-size: 14px;
 `;
 
+const Description = styled.div`
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 6px;
+  padding: 12px;
+  margin-bottom: 16px;
+  font-size: 12px;
+  color: #666;
+  line-height: 1.4;
+`;
+
+const DescriptionTitle = styled.div`
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 4px;
+  font-size: 13px;
+`;
+
+const DescriptionText = styled.div`
+  color: #666;
+`;
+
 
 
 const NumberStats: React.FC<NumberStatsProps> = ({
@@ -102,12 +124,26 @@ const NumberStats: React.FC<NumberStatsProps> = ({
   colorStats = [],
   onNumberClick,
   highlightedNumber,
+  sortOrder = 'asc',
 }) => {
   const handleNumberClick = (number: any) => {
     if (onNumberClick) {
       onNumberClick(number);
     }
   };
+
+  // 根据排序方式对编号数据进行排序
+  const sortedNumberStats = useMemo(() => {
+    if (!numberStats) return [];
+
+    return [...numberStats].sort((a, b) => {
+      if (sortOrder === 'asc') {
+        return a.number - b.number;
+      } else {
+        return b.number - a.number;
+      }
+    });
+  }, [numberStats, sortOrder]);
 
   if (!numberStats || numberStats.length === 0) {
     return (
@@ -121,8 +157,18 @@ const NumberStats: React.FC<NumberStatsProps> = ({
 
   return (
     <StatsContainer>
+      <Description>
+        <DescriptionTitle>📋 编号分组说明</DescriptionTitle>
+        <DescriptionText>
+          每个编号组内的色号按照蛇形路径排列：<br />
+          • <strong>奇数组号</strong>：从右往左排列<br />
+          • <strong>偶数组号</strong>：从左往右排列<br />
+          点击编号可高亮显示对应的像素区域。
+        </DescriptionText>
+      </Description>
+
       <NumberList>
-        {numberStats.map((number) => (
+        {sortedNumberStats.map((number) => (
           <NumberItem
             key={number.number}
             highlighted={highlightedNumber === number.number}

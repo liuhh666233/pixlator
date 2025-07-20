@@ -217,6 +217,7 @@ interface StatsPanelProps {
 }
 
 type TabType = 'colors' | 'diagonals' | 'history' | 'usage';
+type SortOrder = 'asc' | 'desc';
 
 const StatsPanel: React.FC<StatsPanelProps> = ({
     colorStats = [],
@@ -230,6 +231,7 @@ const StatsPanel: React.FC<StatsPanelProps> = ({
     selectedHistoryItem,
 }) => {
     const [activeTab, setActiveTab] = useState<TabType>('colors');
+    const [numberSortOrder, setNumberSortOrder] = useState<SortOrder>('asc');
     const [history, setHistory] = useState<HistoryItem[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -263,6 +265,10 @@ const StatsPanel: React.FC<StatsPanelProps> = ({
 
     const handleTabChange = (tab: TabType) => {
         setActiveTab(tab);
+    };
+
+    const handleNumberSortToggle = () => {
+        setNumberSortOrder(prev => prev === 'asc' ? 'desc' : 'asc');
     };
 
     const handleHistoryItemClick = (item: HistoryItem) => {
@@ -456,8 +462,10 @@ const StatsPanel: React.FC<StatsPanelProps> = ({
                 <TabButton
                     active={activeTab === 'diagonals'}
                     onClick={() => handleTabChange('diagonals')}
+                    onDoubleClick={handleNumberSortToggle}
+                    title="双击切换排序方式"
                 >
-                    编号分组
+                    编号分组 {activeTab === 'diagonals' && (numberSortOrder === 'asc' ? '↑' : '↓')}
                 </TabButton>
                 <TabButton
                     active={activeTab === 'history'}
@@ -491,9 +499,10 @@ const StatsPanel: React.FC<StatsPanelProps> = ({
                             colorStats={colorStats}
                             onNumberClick={onNumberClick}
                             highlightedNumber={highlightedNumber}
+                            sortOrder={numberSortOrder}
                         />
                     ) : (
-                        <EmptyState>暂无对角线统计数据</EmptyState>
+                        <EmptyState>暂无编号统计数据</EmptyState>
                     )
                 ) : activeTab === 'history' ? (
                     renderHistoryTab()

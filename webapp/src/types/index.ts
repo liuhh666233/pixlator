@@ -123,6 +123,7 @@ export interface NumberStatsProps {
     colorStats?: ColorStat[]; // 添加颜色统计用于颜色映射
     onNumberClick?: (number: NumberStat) => void;
     highlightedNumber?: number;
+    sortOrder?: 'asc' | 'desc'; // 排序方式
 }
 
 export interface HistoryPanelProps {

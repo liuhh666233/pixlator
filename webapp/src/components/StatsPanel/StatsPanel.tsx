@@ -448,25 +448,25 @@ const StatsPanel: React.FC<StatsPanelProps> = ({
                     active={activeTab === 'colors'}
                     onClick={() => handleTabChange('colors')}
                 >
-                    颜色
+                    颜色统计
                 </TabButton>
                 <TabButton
                     active={activeTab === 'diagonals'}
                     onClick={() => handleTabChange('diagonals')}
                 >
-                    对角线
+                    编号分组
                 </TabButton>
                 <TabButton
                     active={activeTab === 'history'}
                     onClick={() => handleTabChange('history')}
                 >
-                    历史 ({history.length})
+                    历史记录 ({history.length})
                 </TabButton>
                 <TabButton
                     active={activeTab === 'usage'}
                     onClick={() => handleTabChange('usage')}
                 >
-                    统计
+                    使用统计
                 </TabButton>
             </TabContainer>
 

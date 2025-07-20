@@ -113,7 +113,7 @@ const NumberStats: React.FC<NumberStatsProps> = ({
     return (
       <StatsContainer>
         <EmptyState>
-          暂无对角线数据
+          暂无编号数据
         </EmptyState>
       </StatsContainer>
     );
@@ -127,7 +127,7 @@ const NumberStats: React.FC<NumberStatsProps> = ({
             key={number.number}
             highlighted={highlightedNumber === number.number}
             onClick={() => handleNumberClick(number)}
-            title={`点击高亮对角线 ${number.number} (${number.sequence.length} 个颜色段)`}
+            title={`点击高亮编号 ${number.number} (${number.sequence.length} 个颜色段)`}
           >
             <Number>#{number.number}</Number>
 

@@ -6,7 +6,7 @@ import ParameterPanel from './components/ParameterPanel';
 import PixelGrid from './components/PixelGrid/PixelGrid';
 import StatsPanel from './components/StatsPanel/StatsPanel';
 import { processImage } from './services/api';
-import { UploadResponse, ProcessResult, ColorStat, DiagonalStat } from './types';
+import { UploadResponse, ProcessResult, ColorStat, DiagonalStat, HistoryItem } from './types';
 
 const AppContainer = styled.div`
   min-height: 100vh;
@@ -129,6 +129,7 @@ const App: React.FC = () => {
     const [pixelSize, setPixelSize] = useState(16);
     const [highlightedColor, setHighlightedColor] = useState<string | null>(null);
     const [highlightedDiagonal, setHighlightedDiagonal] = useState<number | null>(null);
+    const [selectedHistoryItem, setSelectedHistoryItem] = useState<string | null>(null);
 
     const handleUploadSuccess = (data: UploadResponse) => {
         setUploadedFile(data);
@@ -188,6 +189,50 @@ const App: React.FC = () => {
     const clearHighlights = () => {
         setHighlightedColor(null);
         setHighlightedDiagonal(null);
+    };
+
+    const handleHistoryItemClick = async (item: HistoryItem) => {
+        setSelectedHistoryItem(item.filename);
+
+        // 加载历史记录的处理结果
+        try {
+            const response = await fetch(`/api/history/${item.filename}`);
+            const result = await response.json();
+
+            if (result.success) {
+                setProcessingResult(result.data);
+                setUploadedFile({
+                    file_id: item.filename,
+                    filename: item.original_filename,
+                    size: item.file_size,
+                    preview_url: item.preview_url,
+                    dimensions: item.dimensions
+                });
+                setStatusMessage({ type: 'success', text: `已加载历史记录: ${item.original_filename}` });
+            }
+        } catch (error) {
+            setStatusMessage({ type: 'error', text: '加载历史记录失败' });
+        }
+    };
+
+    const handleHistoryItemDelete = async (filename: string) => {
+        try {
+            const response = await fetch(`/api/files/${filename}`, {
+                method: 'DELETE',
+            });
+
+            if (response.ok) {
+                // 如果删除的是当前选中的项目，清除选择
+                if (selectedHistoryItem === filename) {
+                    setSelectedHistoryItem(null);
+                    setProcessingResult(null);
+                    setUploadedFile(null);
+                }
+                setStatusMessage({ type: 'success', text: '历史记录已删除' });
+            }
+        } catch (error) {
+            setStatusMessage({ type: 'error', text: '删除历史记录失败' });
+        }
     };
 
     return (
@@ -261,18 +306,17 @@ const App: React.FC = () => {
                         )}
                     </CenterPanel>
 
-                    <RightPanel>
-                        {processingResult && (
-                            <StatsPanel
-                                colorStats={processingResult.color_stats}
-                                diagonalStats={processingResult.diagonal_stats}
-                                onColorClick={handleColorClick}
-                                onDiagonalClick={handleDiagonalClick}
-                                highlightedColor={highlightedColor || undefined}
-                                highlightedDiagonal={highlightedDiagonal || undefined}
-                            />
-                        )}
-                    </RightPanel>
+                    <StatsPanel
+                        colorStats={processingResult?.color_stats || []}
+                        diagonalStats={processingResult?.diagonal_stats || []}
+                        onColorClick={handleColorClick}
+                        onDiagonalClick={handleDiagonalClick}
+                        highlightedColor={highlightedColor || undefined}
+                        highlightedDiagonal={highlightedDiagonal || undefined}
+                        onHistoryItemClick={handleHistoryItemClick}
+                        onHistoryItemDelete={handleHistoryItemDelete}
+                        selectedHistoryItem={selectedHistoryItem || undefined}
+                    />
                 </MainContent>
 
 

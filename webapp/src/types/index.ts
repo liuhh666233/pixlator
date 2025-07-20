@@ -65,6 +65,10 @@ export interface HistoryItem {
     original_filename: string;
     upload_time: string;
     file_size: number;
+    dimensions: {
+        width: number;
+        height: number;
+    };
     preview_url: string;
     has_processing_result?: boolean;
 }
@@ -96,7 +100,7 @@ export interface ParameterPanelProps {
     maxSize: number;
     colorCount?: number;
     onMaxSizeChange: (size: number) => void;
-    onColorCountChange: (count: number) => void;
+    onColorCountChange: (count: number | undefined) => void;
     onProcess: () => void;
     processing?: boolean;
     disabled?: boolean;
@@ -116,9 +120,8 @@ export interface DiagonalStatsProps {
 }
 
 export interface HistoryPanelProps {
-    history: HistoryItem[];
-    onItemClick: (item: HistoryItem) => void;
-    onItemDelete: (filename: string) => void;
+    onItemClick?: (item: HistoryItem) => void;
+    onItemDelete?: (filename: string) => void;
     selectedItem?: string;
 }
 

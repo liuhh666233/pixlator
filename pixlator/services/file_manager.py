@@ -8,7 +8,7 @@ from PIL import Image
 import uuid
 from loguru import logger
 
-from config import settings
+from pixlator.config import settings
 
 class FileManager:
     """文件管理服务"""

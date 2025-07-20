@@ -6,27 +6,8 @@ from fastapi.responses import JSONResponse, FileResponse
 from datetime import datetime
 from loguru import logger
 from pathlib import Path
-
-
-from config import settings
-from api.routes import router as api_router
-
-# 配置loguru日志
-logger.remove()  # 移除默认处理器
-logger.add(
-    "logs/pixlator.log",
-    rotation="10 MB",
-    retention="7 days",
-    level="INFO",
-    format="{time:YYYY-MM-DD HH:mm:ss} | {level} | {name}:{function}:{line} | {message}"
-)
-logger.add(
-    lambda msg: print(msg, end=""),
-    level="INFO",
-    format="<green>{time:HH:mm:ss}</green> | <level>{level: <8}</level> | <cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> | <level>{message}</level>"
-)
-
-
+from pixlator.config import settings
+from pixlator.api.routes import router as api_router
 
 # 创建FastAPI应用
 app = FastAPI(
@@ -127,7 +108,7 @@ def main():
     logger.info(f"Allowed extensions: {settings.ALLOWED_EXTENSIONS}")
     
     uvicorn.run(
-        "main:app",
+        app,
         host=settings.HOST,
         port=settings.PORT,
         reload=settings.DEBUG,

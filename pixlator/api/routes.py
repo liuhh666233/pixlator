@@ -2,12 +2,12 @@ from fastapi import APIRouter, UploadFile, File, HTTPException, Form, Query
 from fastapi.responses import FileResponse, JSONResponse
 import os
 from loguru import logger
-from api.models import (
+from pixlator.api.models import (
     UploadResponse, ProcessRequest, ProcessResponse
 )
-from services.file_manager import FileManager
-from services.image_processor import ImageProcessor
-from config import settings
+from pixlator.services.file_manager import FileManager
+from pixlator.services.image_processor import ImageProcessor
+from pixlator.config import settings
 
 router = APIRouter()
 

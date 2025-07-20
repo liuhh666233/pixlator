@@ -8,7 +8,7 @@ setup(
     packages=find_packages(),
     entry_points={
         "console_scripts": [
-            "pixlator=src.main:main",
+            "pixlator=pixlator.main:main",
         ]
     },
     python_requires=">=3.6",

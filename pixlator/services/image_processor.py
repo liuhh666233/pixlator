@@ -7,7 +7,7 @@ from sklearn.cluster import KMeans
 from collections import defaultdict
 from loguru import logger
 
-from config import settings
+from pixlator.config import settings
 
 # 定义编号方式类型
 NumberingMode = Literal["top_to_bottom", "bottom_to_top", "diagonal_bottom_left", "diagonal_bottom_right"]

@@ -7,10 +7,16 @@ const StatsContainer = styled.div`
   border-radius: 8px;
   padding: 20px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  min-width: 280px;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 `;
 
 const Title = styled.h3`
-  margin: 0 0 16px 0;
+  margin: 0;
   color: #333;
   font-size: 18px;
   font-weight: 600;
@@ -19,21 +25,23 @@ const Title = styled.h3`
 const DiagonalList = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  max-height: 400px;
+  gap: 4px;
   overflow-y: auto;
+  max-height: 70vh;
+  min-height: 400px;
 `;
 
 const DiagonalItem = styled.div<{ highlighted: boolean }>`
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px;
+  gap: 6px;
+  padding: 6px;
   border-radius: 4px;
   background: ${props => props.highlighted ? '#e3f2fd' : 'transparent'};
   border: 2px solid ${props => props.highlighted ? '#2196f3' : 'transparent'};
   cursor: pointer;
   transition: all 0.2s ease;
+  min-width: 0;
 
   &:hover {
     background: #f0f8ff;
@@ -43,15 +51,19 @@ const DiagonalItem = styled.div<{ highlighted: boolean }>`
 const DiagonalNumber = styled.div`
   font-weight: 600;
   color: #2196f3;
-  font-size: 12px;
-  min-width: 50px;
+  font-size: 11px;
+  min-width: 35px;
+  flex-shrink: 0;
 `;
 
 const SequenceContainer = styled.div`
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 1px;
   align-items: center;
+  overflow-x: auto;
+  min-width: 0;
+  flex: 1;
 `;
 
 const SequenceItem = styled.div<{ color: string; count: number }>`
@@ -98,9 +110,6 @@ const Summary = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 16px;
-  padding-top: 16px;
-  border-top: 1px solid #eee;
   font-size: 14px;
   color: #666;
 `;

@@ -34,10 +34,10 @@ const Subtitle = styled.p`
 `;
 
 const MainContent = styled.main`
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: 1fr 2fr;
+  grid-template-columns: 1fr 2fr 1fr;
   gap: 30px;
   
   @media (max-width: 768px) {
@@ -58,16 +58,21 @@ const CenterPanel = styled.div`
   gap: 20px;
 `;
 
+const RightPanel = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: flex-start;
+  justify-content: flex-start;
+`;
+
 const StatsSection = styled.div`
   margin-top: 30px;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-  
-  @media (max-width: 768px) {
-    grid-template-columns: 1fr;
-    gap: 20px;
-  }
+  display: flex;
+  justify-content: center;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
 `;
 
 const Placeholder = styled.div`
@@ -273,6 +278,17 @@ const App: React.FC = () => {
                             </Placeholder>
                         )}
                     </CenterPanel>
+
+                    <RightPanel>
+                        {processingResult && (
+                            <DiagonalStats
+                                diagonalStats={processingResult.diagonal_stats}
+                                colorStats={processingResult.color_stats}
+                                onDiagonalClick={handleDiagonalClick}
+                                highlightedDiagonal={highlightedDiagonal || undefined}
+                            />
+                        )}
+                    </RightPanel>
                 </MainContent>
 
                 {processingResult && (
@@ -281,13 +297,6 @@ const App: React.FC = () => {
                             colorStats={processingResult.color_stats}
                             onColorClick={handleColorClick}
                             highlightedColor={highlightedColor || undefined}
-                        />
-
-                        <DiagonalStats
-                            diagonalStats={processingResult.diagonal_stats}
-                            colorStats={processingResult.color_stats}
-                            onDiagonalClick={handleDiagonalClick}
-                            highlightedDiagonal={highlightedDiagonal || undefined}
                         />
                     </StatsSection>
                 )}

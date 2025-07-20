@@ -7,6 +7,8 @@ const StatsContainer = styled.div`
   border-radius: 8px;
   padding: 20px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 800px;
 `;
 
 const Title = styled.h3`

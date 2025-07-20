@@ -293,17 +293,10 @@ class PixelArtConverter:
                         number_pixels.append(self.pixel_data[y][x])
             
             # 根据编号方式排序像素
-            if numbering_mode == "top_to_bottom":
-                # 按x坐标排序（从左到右）
-                number_pixels.sort(key=lambda p: p["x"])
-            elif numbering_mode == "bottom_to_top":
-                # 按x坐标排序（从左到右）
-                number_pixels.sort(key=lambda p: p["x"])
-            elif numbering_mode == "diagonal_bottom_left":
-                # 按x坐标排序（从左到右）
-                number_pixels.sort(key=lambda p: p["x"])
-            elif numbering_mode == "diagonal_bottom_right":
-                # 按x坐标排序（从左到右）
+            # 奇数组号从右往左，偶数组号从左往右
+            if number % 2 == 1:
+                number_pixels.sort(key=lambda p: p["x"], reverse=True)
+            else:
                 number_pixels.sort(key=lambda p: p["x"])
             
             # 统计连续颜色块

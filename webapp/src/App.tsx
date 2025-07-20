@@ -37,8 +37,9 @@ const MainContent = styled.main`
   max-width: 1400px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: 1fr 2fr 1fr;
+  grid-template-columns: 280px 1fr 320px;
   gap: 30px;
+  justify-content: center;
   
   @media (max-width: 768px) {
     grid-template-columns: 1fr;

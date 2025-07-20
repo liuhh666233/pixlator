@@ -10,7 +10,7 @@ const PanelContainer = styled.div`
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   width: 100%;
   min-width: 280px;
-  max-width: 400px;
+  max-width: none;
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -23,6 +23,7 @@ const TabContainer = styled.div`
   margin: -20px -20px 0 -20px;
   padding: 0 20px;
   flex-wrap: wrap;
+  width: 100%;
 `;
 
 const TabButton = styled.button<{ active: boolean }>`
@@ -37,6 +38,8 @@ const TabButton = styled.button<{ active: boolean }>`
   transition: all 0.2s ease;
   position: relative;
   white-space: nowrap;
+  flex: 1;
+  min-width: 0;
 
   &:hover {
     color: ${props => props.active ? '#2196f3' : '#333'};

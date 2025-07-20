@@ -285,6 +285,7 @@ const App: React.FC = () => {
 
                         <DiagonalStats
                             diagonalStats={processingResult.diagonal_stats}
+                            colorStats={processingResult.color_stats}
                             onDiagonalClick={handleDiagonalClick}
                             highlightedDiagonal={highlightedDiagonal || undefined}
                         />

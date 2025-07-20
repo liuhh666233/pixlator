@@ -109,6 +109,7 @@ export interface ColorStatsProps {
 
 export interface DiagonalStatsProps {
     diagonalStats: DiagonalStat[];
+    colorStats?: ColorStat[]; // 添加颜色统计用于颜色映射
     onDiagonalClick?: (diagonal: DiagonalStat) => void;
     highlightedDiagonal?: number;
 }

@@ -12,7 +12,7 @@ class Settings:
     
     # 服务器配置
     HOST: str = os.getenv("HOST", "0.0.0.0")
-    PORT: int = int(os.getenv("PORT", "8000"))
+    PORT: int = int(os.getenv("PORT", "9000"))
     
     # 文件上传配置
     UPLOAD_DIR: str = os.getenv("UPLOAD_DIR", "uploads")

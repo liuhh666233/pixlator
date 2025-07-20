@@ -32,8 +32,7 @@ export interface ProcessRequest {
 export interface PixelData {
     x: number;
     y: number;
-    diagonal: number;
-    number: number;  // 新增字段，更明确地表示编号
+    number: number;  // 像素编号
     color: [number, number, number];
     hex: string;
 }
@@ -47,9 +46,9 @@ export interface ColorStat {
     positions: [number, number][];
 }
 
-// 对角线统计
-export interface DiagonalStat {
-    diagonal_num: number;
+// 编号统计
+export interface NumberStat {
+    number: number;
     sequence: [number, number][];
 }
 
@@ -57,7 +56,7 @@ export interface DiagonalStat {
 export interface ProcessResult {
     pixel_data: PixelData[][];
     color_stats: ColorStat[];
-    diagonal_stats: DiagonalStat[];
+    number_stats: NumberStat[];
     dimensions: {
         width: number;
         height: number;
@@ -92,12 +91,12 @@ export interface PixelGridProps {
         height: number;
     };
     pixelSize?: number;
-    showDiagonals?: boolean;
+    showNumbers?: boolean;
     onPixelClick?: (pixel: PixelData) => void;
     onPixelSizeChange?: (size: number) => void;
-    onShowDiagonalsChange?: (show: boolean) => void;
+    onShowNumbersChange?: (show: boolean) => void;
     highlightedColor?: string;
-    highlightedDiagonal?: number;
+    highlightedNumber?: number;
     onClearHighlights?: () => void;
 }
 
@@ -119,17 +118,29 @@ export interface ColorStatsProps {
     highlightedColor?: string;
 }
 
-export interface DiagonalStatsProps {
-    diagonalStats: DiagonalStat[];
+export interface NumberStatsProps {
+    numberStats: NumberStat[];
     colorStats?: ColorStat[]; // 添加颜色统计用于颜色映射
-    onDiagonalClick?: (diagonal: DiagonalStat) => void;
-    highlightedDiagonal?: number;
+    onNumberClick?: (number: NumberStat) => void;
+    highlightedNumber?: number;
 }
 
 export interface HistoryPanelProps {
     onItemClick?: (item: HistoryItem) => void;
     onItemDelete?: (filename: string) => void;
     selectedItem?: string;
+}
+
+export interface StatsPanelProps {
+    colorStats?: ColorStat[];
+    numberStats?: NumberStat[];
+    onColorClick?: (color: ColorStat) => void;
+    onNumberClick?: (number: NumberStat) => void;
+    highlightedColor?: string;
+    highlightedNumber?: number;
+    onHistoryItemClick?: (item: HistoryItem) => void;
+    onHistoryItemDelete?: (filename: string) => void;
+    selectedHistoryItem?: string;
 }
 
 export interface ExportPanelProps {

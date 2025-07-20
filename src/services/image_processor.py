@@ -29,7 +29,7 @@ class ImageProcessor:
             self.logger.info(f"Processing image: {file_path} with max_size={max_size}, color_count={color_count}, numbering_mode={numbering_mode}")
             
             # 创建转换器
-            converter = DiagonalPixelArtConverter(file_path)
+            converter = PixelArtConverter(file_path)
             
             # 调整图片尺寸
             converter.resize_image(max_size)
@@ -41,14 +41,14 @@ class ImageProcessor:
             # 分析像素数据
             converter.analyze_pixels(numbering_mode)
             
-            # 分析对角线序列
-            diagonal_sequences, color_to_index = converter.analyze_diagonal_sequences(numbering_mode)
+            # 分析编号序列
+            number_sequences, color_to_index = converter.analyze_number_sequences(numbering_mode)
             
             # 生成颜色统计
             color_stats = self._generate_color_stats(converter.pixel_data, color_to_index)
             
-            # 生成对角线统计
-            diagonal_stats = self._generate_diagonal_stats(diagonal_sequences)
+            # 生成编号统计
+            number_stats = self._generate_number_stats(number_sequences)
             
             # 准备返回数据
             result = {
@@ -63,7 +63,7 @@ class ImageProcessor:
                 },
                 "pixel_data": self._serialize_pixel_data(converter.pixel_data),
                 "color_stats": color_stats,
-                "diagonal_stats": diagonal_stats,
+                "number_stats": number_stats,
                 "dimensions": {
                     "width": converter.width,
                     "height": converter.height
@@ -86,8 +86,7 @@ class ImageProcessor:
                 serialized_row.append({
                     "x": pixel["x"],
                     "y": pixel["y"],
-                    "diagonal": pixel["diagonal"],
-                    "number": pixel["number"],  # 添加新的number字段
+                    "number": pixel["number"],  # 像素编号
                     "color": pixel["color"],
                     "hex": pixel["hex"]
                 })
@@ -121,18 +120,18 @@ class ImageProcessor:
         
         return stats_list
     
-    def _generate_diagonal_stats(self, diagonal_sequences: Dict) -> List[Dict]:
-        """生成对角线统计"""
-        diagonal_stats = []
+    def _generate_number_stats(self, number_sequences: Dict) -> List[Dict]:
+        """生成编号统计"""
+        number_stats = []
         
-        for diagonal_num in sorted(diagonal_sequences.keys()):
-            sequence = diagonal_sequences[diagonal_num]
-            diagonal_stats.append({
-                "diagonal_num": diagonal_num,
+        for number in sorted(number_sequences.keys()):
+            sequence = number_sequences[number]
+            number_stats.append({
+                "number": number,
                 "sequence": sequence
             })
         
-        return diagonal_stats
+        return number_stats
     
     def export_pixelated_image(self, pixel_data: List[List[Dict]], dimensions: Dict, pixel_size: int = 10, export_type: str = "png") -> str:
         """导出像素化图片"""
@@ -185,8 +184,8 @@ class ImageProcessor:
             raise
 
 
-class DiagonalPixelArtConverter:
-    """对角线像素艺术转换器（从原有代码移植）"""
+class PixelArtConverter:
+    """像素艺术转换器"""
     
     def __init__(self, image_path: str):
         """初始化图片转换器"""
@@ -256,16 +255,15 @@ class DiagonalPixelArtConverter:
                 row.append({
                     "x": x,
                     "y": y,
-                    "diagonal": number,  # 保持字段名兼容性，实际存储的是编号
-                    "number": number,    # 新增字段，更明确地表示编号
+                    "number": number,    # 像素编号
                     "color": (r, g, b),
                     "hex": hex_color,
                 })
             self.pixel_data.append(row)
     
-    def analyze_diagonal_sequences(self, numbering_mode: NumberingMode = "diagonal_bottom_right"):
-        """分析每个对角线的连续颜色块序列"""
-        diagonal_sequences = {}
+    def analyze_number_sequences(self, numbering_mode: NumberingMode = "diagonal_bottom_right"):
+        """分析每个编号的连续颜色块序列"""
+        number_sequences = {}
         
         # 获取颜色索引映射
         color_to_index = {}
@@ -274,47 +272,47 @@ class DiagonalPixelArtConverter:
                 if pixel["color"] not in color_to_index:
                     color_to_index[pixel["color"]] = len(color_to_index) + 1
         
-        # 根据编号方式确定对角线数量
+        # 根据编号方式确定编号数量
         if numbering_mode in ["diagonal_bottom_left", "diagonal_bottom_right"]:
-            # 对角线方式：对角线数量为 width + height - 1
-            max_diagonal = self.width + self.height - 1
+            # 对角线方式：编号数量为 width + height - 1
+            max_number = self.width + self.height - 1
         else:
-            # 行列方式：使用行数作为"对角线"数量
-            max_diagonal = self.height
+            # 行列方式：使用行数作为编号数量
+            max_number = self.height
         
-        # 分析每个对角线
-        for diagonal_num in range(max_diagonal):
+        # 分析每个编号
+        for number in range(max_number):
             sequence = []
             
-            # 收集该对角线上的所有像素
-            diagonal_pixels = []
+            # 收集该编号的所有像素
+            number_pixels = []
             for y in range(self.height):
                 for x in range(self.width):
                     pixel_number = self._calculate_number(x, y, numbering_mode)
-                    if pixel_number == diagonal_num:
-                        diagonal_pixels.append(self.pixel_data[y][x])
+                    if pixel_number == number:
+                        number_pixels.append(self.pixel_data[y][x])
             
             # 根据编号方式排序像素
             if numbering_mode == "top_to_bottom":
                 # 按x坐标排序（从左到右）
-                diagonal_pixels.sort(key=lambda p: p["x"])
+                number_pixels.sort(key=lambda p: p["x"])
             elif numbering_mode == "bottom_to_top":
                 # 按x坐标排序（从左到右）
-                diagonal_pixels.sort(key=lambda p: p["x"])
+                number_pixels.sort(key=lambda p: p["x"])
             elif numbering_mode == "diagonal_bottom_left":
                 # 按x坐标排序（从左到右）
-                diagonal_pixels.sort(key=lambda p: p["x"])
+                number_pixels.sort(key=lambda p: p["x"])
             elif numbering_mode == "diagonal_bottom_right":
                 # 按x坐标排序（从左到右）
-                diagonal_pixels.sort(key=lambda p: p["x"])
+                number_pixels.sort(key=lambda p: p["x"])
             
             # 统计连续颜色块
-            if diagonal_pixels:
-                current_color = color_to_index[diagonal_pixels[0]["color"]]
+            if number_pixels:
+                current_color = color_to_index[number_pixels[0]["color"]]
                 current_count = 1
                 
-                for i in range(1, len(diagonal_pixels)):
-                    pixel_color = color_to_index[diagonal_pixels[i]["color"]]
+                for i in range(1, len(number_pixels)):
+                    pixel_color = color_to_index[number_pixels[i]["color"]]
                     
                     if pixel_color == current_color:
                         # 相同颜色，计数加1
@@ -328,9 +326,9 @@ class DiagonalPixelArtConverter:
                 # 保存最后一个颜色块
                 sequence.append((current_color, current_count))
             
-            diagonal_sequences[diagonal_num] = sequence
+            number_sequences[number] = sequence
         
-        return diagonal_sequences, color_to_index
+        return number_sequences, color_to_index
 
 
  

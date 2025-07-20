@@ -38,7 +38,7 @@ const PixelGridWrapper = styled.div<{ width: number; height: number; pixelSize: 
 const Pixel = styled.div<{
   color: string;
   highlighted: boolean;
-  showDiagonals: boolean;
+  showNumbers: boolean;
 }>`
   width: 100%;
   height: 100%;
@@ -54,9 +54,9 @@ const Pixel = styled.div<{
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
   }
 
-  ${props => props.showDiagonals && `
+  ${props => props.showNumbers && `
     &::after {
-      content: attr(data-diagonal);
+      content: attr(data-number);
       position: absolute;
       top: 50%;
       left: 50%;
@@ -179,12 +179,12 @@ const PixelGrid: React.FC<PixelGridProps> = ({
   pixelData,
   dimensions,
   pixelSize = 16,
-  showDiagonals = false,
+  showNumbers = false,
   onPixelClick,
   onPixelSizeChange,
-  onShowDiagonalsChange,
+  onShowNumbersChange,
   highlightedColor,
-  highlightedDiagonal,
+  highlightedNumber,
   onClearHighlights,
 }) => {
   const handlePixelClick = (pixel: any) => {
@@ -197,7 +197,7 @@ const PixelGrid: React.FC<PixelGridProps> = ({
     if (highlightedColor && pixel.hex === highlightedColor) {
       return true;
     }
-    if (highlightedDiagonal !== undefined && pixel.diagonal === highlightedDiagonal) {
+    if (highlightedNumber !== undefined && pixel.number === highlightedNumber) {
       return true;
     }
     return false;
@@ -230,14 +230,14 @@ const PixelGrid: React.FC<PixelGridProps> = ({
           </ControlGroup>
 
           <ToggleButton
-            active={showDiagonals}
-            onClick={() => onShowDiagonalsChange?.(!showDiagonals)}
+            active={showNumbers}
+            onClick={() => onShowNumbersChange?.(!showNumbers)}
           >
-            {showDiagonals ? '隐藏' : '显示'}对角线编号
+            {showNumbers ? '隐藏' : '显示'}编号
           </ToggleButton>
         </div>
 
-        {(highlightedColor || highlightedDiagonal !== null) && (
+        {(highlightedColor || highlightedNumber !== null) && (
           <ToggleButton
             active={false}
             onClick={onClearHighlights}
@@ -258,8 +258,8 @@ const PixelGrid: React.FC<PixelGridProps> = ({
             <InfoValue>{dimensions.width * dimensions.height}</InfoValue>
           </InfoItem>
           <InfoItem>
-            <InfoLabel>对角线数量:</InfoLabel>
-            <InfoValue>{Math.max(...pixelData.flat().map(p => p.diagonal)) + 1}</InfoValue>
+            <InfoLabel>编号组数:</InfoLabel>
+            <InfoValue>{Math.max(...pixelData.flat().map(p => p.number)) + 1}</InfoValue>
           </InfoItem>
         </GridInfo>
 
@@ -275,10 +275,10 @@ const PixelGrid: React.FC<PixelGridProps> = ({
                   key={`${x}-${y}`}
                   color={pixel.hex}
                   highlighted={isPixelHighlighted(pixel)}
-                  showDiagonals={showDiagonals}
-                  data-diagonal={pixel.diagonal}
+                  showNumbers={showNumbers}
+                  data-number={pixel.number}
                   onClick={() => handlePixelClick(pixel)}
-                  title={`位置: (${x}, ${y}) | 对角线: ${pixel.diagonal} | 颜色: ${pixel.hex}`}
+                  title={`位置: (${x}, ${y}) | 编号: ${pixel.number} | 颜色: ${pixel.hex}`}
                 />
               ))
             )}

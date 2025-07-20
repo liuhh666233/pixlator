@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import ColorStats from '../ColorStats/ColorStats';
-import DiagonalStats from '../DiagonalStats/DiagonalStats';
-import type { ColorStat, DiagonalStat, HistoryItem } from '../../types';
+import NumberStats from '../NumberStats/NumberStats';
+import type { ColorStat, NumberStat, HistoryItem } from '../../types';
 
 const PanelContainer = styled.div`
   background: white;
@@ -203,11 +203,11 @@ const StatItemValue = styled.span`
 
 interface StatsPanelProps {
     colorStats?: ColorStat[];
-    diagonalStats?: DiagonalStat[];
+    numberStats?: NumberStat[];
     onColorClick?: (color: ColorStat) => void;
-    onDiagonalClick?: (diagonal: DiagonalStat) => void;
+    onNumberClick?: (number: NumberStat) => void;
     highlightedColor?: string;
-    highlightedDiagonal?: number;
+    highlightedNumber?: number;
     onHistoryItemClick?: (item: HistoryItem) => void;
     onHistoryItemDelete?: (filename: string) => void;
     selectedHistoryItem?: string;
@@ -217,11 +217,11 @@ type TabType = 'colors' | 'diagonals' | 'history' | 'usage';
 
 const StatsPanel: React.FC<StatsPanelProps> = ({
     colorStats = [],
-    diagonalStats = [],
+    numberStats = [],
     onColorClick,
-    onDiagonalClick,
+    onNumberClick,
     highlightedColor,
-    highlightedDiagonal,
+    highlightedNumber,
     onHistoryItemClick,
     onHistoryItemDelete,
     selectedHistoryItem,
@@ -482,12 +482,12 @@ const StatsPanel: React.FC<StatsPanelProps> = ({
                         <EmptyState>暂无颜色统计数据</EmptyState>
                     )
                 ) : activeTab === 'diagonals' ? (
-                    diagonalStats.length > 0 ? (
-                        <DiagonalStats
-                            diagonalStats={diagonalStats}
+                    numberStats.length > 0 ? (
+                        <NumberStats
+                            numberStats={numberStats}
                             colorStats={colorStats}
-                            onDiagonalClick={onDiagonalClick}
-                            highlightedDiagonal={highlightedDiagonal}
+                            onNumberClick={onNumberClick}
+                            highlightedNumber={highlightedNumber}
                         />
                     ) : (
                         <EmptyState>暂无对角线统计数据</EmptyState>

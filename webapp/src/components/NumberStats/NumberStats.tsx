@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import type { DiagonalStatsProps } from '../../types';
+import type { NumberStatsProps } from '../../types';
 
 const StatsContainer = styled.div`
   width: 100%;
@@ -11,7 +11,7 @@ const StatsContainer = styled.div`
 
 
 
-const DiagonalList = styled.div`
+const NumberList = styled.div`
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -20,7 +20,7 @@ const DiagonalList = styled.div`
   min-height: 400px;
 `;
 
-const DiagonalItem = styled.div<{ highlighted: boolean }>`
+const NumberItem = styled.div<{ highlighted: boolean }>`
   display: flex;
   align-items: center;
   gap: 6px;
@@ -37,7 +37,7 @@ const DiagonalItem = styled.div<{ highlighted: boolean }>`
   }
 `;
 
-const DiagonalNumber = styled.div`
+const Number = styled.div`
   font-weight: 600;
   color: #2196f3;
   font-size: 11px;
@@ -97,19 +97,19 @@ const EmptyState = styled.div`
 
 
 
-const DiagonalStats: React.FC<DiagonalStatsProps> = ({
-  diagonalStats,
+const NumberStats: React.FC<NumberStatsProps> = ({
+  numberStats,
   colorStats = [],
-  onDiagonalClick,
-  highlightedDiagonal,
+  onNumberClick,
+  highlightedNumber,
 }) => {
-  const handleDiagonalClick = (diagonal: any) => {
-    if (onDiagonalClick) {
-      onDiagonalClick(diagonal);
+  const handleNumberClick = (number: any) => {
+    if (onNumberClick) {
+      onNumberClick(number);
     }
   };
 
-  if (!diagonalStats || diagonalStats.length === 0) {
+  if (!numberStats || numberStats.length === 0) {
     return (
       <StatsContainer>
         <EmptyState>
@@ -121,18 +121,18 @@ const DiagonalStats: React.FC<DiagonalStatsProps> = ({
 
   return (
     <StatsContainer>
-      <DiagonalList>
-        {diagonalStats.map((diagonal) => (
-          <DiagonalItem
-            key={diagonal.diagonal_num}
-            highlighted={highlightedDiagonal === diagonal.diagonal_num}
-            onClick={() => handleDiagonalClick(diagonal)}
-            title={`点击高亮对角线 ${diagonal.diagonal_num} (${diagonal.sequence.length} 个颜色段)`}
+      <NumberList>
+        {numberStats.map((number) => (
+          <NumberItem
+            key={number.number}
+            highlighted={highlightedNumber === number.number}
+            onClick={() => handleNumberClick(number)}
+            title={`点击高亮对角线 ${number.number} (${number.sequence.length} 个颜色段)`}
           >
-            <DiagonalNumber>#{diagonal.diagonal_num}</DiagonalNumber>
+            <Number>#{number.number}</Number>
 
             <SequenceContainer>
-              {diagonal.sequence.map((item, index) => {
+              {number.sequence.map((item, index) => {
                 const colorIndex = item[0];
                 const count = item[1];
                 // 从颜色统计中找到对应的颜色
@@ -149,11 +149,11 @@ const DiagonalStats: React.FC<DiagonalStatsProps> = ({
                 );
               })}
             </SequenceContainer>
-          </DiagonalItem>
+          </NumberItem>
         ))}
-      </DiagonalList>
+      </NumberList>
     </StatsContainer>
   );
 };
 
-export default DiagonalStats; 
+export default NumberStats; 

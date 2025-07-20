@@ -7,7 +7,7 @@ import PixelGrid from './components/PixelGrid/PixelGrid';
 import StatsPanel from './components/StatsPanel/StatsPanel';
 import ExportPanel from './components/ExportPanel';
 import { processImage } from './services/api';
-import { UploadResponse, ProcessResult, ColorStat, DiagonalStat, HistoryItem, NumberingMode } from './types';
+import { UploadResponse, ProcessResult, ColorStat, NumberStat, HistoryItem, NumberingMode } from './types';
 
 const AppContainer = styled.div`
   min-height: 100vh;
@@ -127,10 +127,10 @@ const App: React.FC = () => {
     const [numberingMode, setNumberingMode] = useState<NumberingMode>('diagonal_bottom_right');
     const [processing, setProcessing] = useState(false);
     const [statusMessage, setStatusMessage] = useState<{ type: 'success' | 'error' | 'info'; text: string } | null>(null);
-    const [showDiagonals, setShowDiagonals] = useState(false);
+    const [showNumbers, setShowNumbers] = useState(false);
     const [pixelSize, setPixelSize] = useState(16);
     const [highlightedColor, setHighlightedColor] = useState<string | null>(null);
-    const [highlightedDiagonal, setHighlightedDiagonal] = useState<number | null>(null);
+    const [highlightedNumber, setHighlightedNumber] = useState<number | null>(null);
     const [selectedHistoryItem, setSelectedHistoryItem] = useState<string | null>(null);
 
     const handleUploadSuccess = (data: UploadResponse) => {
@@ -177,11 +177,11 @@ const App: React.FC = () => {
 
     const handleColorClick = (color: ColorStat) => {
         setHighlightedColor(color.hex);
-        setHighlightedDiagonal(null);
+        setHighlightedNumber(null);
     };
 
-    const handleDiagonalClick = (diagonal: DiagonalStat) => {
-        setHighlightedDiagonal(diagonal.diagonal_num);
+    const handleNumberClick = (number: NumberStat) => {
+        setHighlightedNumber(number.number);
         setHighlightedColor(null);
     };
 
@@ -191,7 +191,7 @@ const App: React.FC = () => {
 
     const clearHighlights = () => {
         setHighlightedColor(null);
-        setHighlightedDiagonal(null);
+        setHighlightedNumber(null);
     };
 
     const handleHistoryItemClick = async (item: HistoryItem) => {
@@ -375,12 +375,12 @@ const App: React.FC = () => {
                                     pixelData={processingResult.pixel_data}
                                     dimensions={processingResult.dimensions}
                                     pixelSize={pixelSize}
-                                    showDiagonals={showDiagonals}
+                                    showNumbers={showNumbers}
                                     onPixelClick={handlePixelClick}
                                     onPixelSizeChange={setPixelSize}
-                                    onShowDiagonalsChange={setShowDiagonals}
+                                    onShowNumbersChange={setShowNumbers}
                                     highlightedColor={highlightedColor || undefined}
-                                    highlightedDiagonal={highlightedDiagonal || undefined}
+                                    highlightedNumber={highlightedNumber || undefined}
                                     onClearHighlights={clearHighlights}
                                 />
                             </>
@@ -401,11 +401,11 @@ const App: React.FC = () => {
 
                     <StatsPanel
                         colorStats={processingResult?.color_stats || []}
-                        diagonalStats={processingResult?.diagonal_stats || []}
+                        numberStats={processingResult?.number_stats || []}
                         onColorClick={handleColorClick}
-                        onDiagonalClick={handleDiagonalClick}
+                        onNumberClick={handleNumberClick}
                         highlightedColor={highlightedColor || undefined}
-                        highlightedDiagonal={highlightedDiagonal || undefined}
+                        highlightedNumber={highlightedNumber || undefined}
                         onHistoryItemClick={handleHistoryItemClick}
                         onHistoryItemDelete={handleHistoryItemDelete}
                         selectedHistoryItem={selectedHistoryItem || undefined}

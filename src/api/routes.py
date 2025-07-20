@@ -79,7 +79,7 @@ async def process_image(request: ProcessRequest):
         return ProcessResponse(
             pixel_data=result["pixel_data"],
             color_stats=result["color_stats"],
-            diagonal_stats=result["diagonal_stats"],
+            number_stats=result["number_stats"],
             dimensions=result["dimensions"]
         )
         

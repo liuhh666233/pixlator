@@ -32,8 +32,7 @@ class ProcessRequest(BaseModel):
 class PixelData(BaseModel):
     x: int
     y: int
-    diagonal: int
-    number: int  # 新增字段，更明确地表示编号
+    number: int  # 像素编号
     color: Tuple[int, int, int]
     hex: str
 
@@ -46,15 +45,15 @@ class ColorStat(BaseModel):
     positions: List[Tuple[int, int]]
 
 
-class DiagonalStat(BaseModel):
-    diagonal_num: int
+class NumberStat(BaseModel):
+    number: int
     sequence: List[Tuple[int, int]]  # (color_index, count)
 
 
 class ProcessResponse(BaseModel):
     pixel_data: List[List[PixelData]]
     color_stats: List[ColorStat]
-    diagonal_stats: List[DiagonalStat]
+    number_stats: List[NumberStat]
     dimensions: Dict[str, int]
 
 

@@ -67,7 +67,8 @@ async def process_image(request: ProcessRequest):
         result = image_processor.process_image(
             file_path=file_path,
             max_size=request.max_size,
-            color_count=request.color_count
+            color_count=request.color_count,
+            numbering_mode=request.numbering_mode
         )
         
         # 保存处理结果

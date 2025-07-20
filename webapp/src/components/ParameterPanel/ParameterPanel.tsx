@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import type { ParameterPanelProps } from '../../types';
+import type { ParameterPanelProps, NumberingMode } from '../../types';
 
 const Panel = styled.div`
   background: white;
@@ -143,78 +143,99 @@ const LoadingSpinner = styled.div`
 `;
 
 const ParameterPanel: React.FC<ParameterPanelProps> = ({
-    maxSize,
-    colorCount,
-    onMaxSizeChange,
-    onColorCountChange,
-    onProcess,
-    processing = false,
-    disabled = false,
+  maxSize,
+  colorCount,
+  numberingMode,
+  onMaxSizeChange,
+  onColorCountChange,
+  onNumberingModeChange,
+  onProcess,
+  processing = false,
+  disabled = false,
 }) => {
-    const handleMaxSizeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const value = parseInt(e.target.value);
-        onMaxSizeChange(value);
-    };
+  const handleMaxSizeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = parseInt(e.target.value);
+    onMaxSizeChange(value);
+  };
 
-    const handleColorCountChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        const value = e.target.value === 'auto' ? undefined : parseInt(e.target.value);
-        onColorCountChange(value);
-    };
+  const handleColorCountChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value === 'auto' ? undefined : parseInt(e.target.value);
+    onColorCountChange(value);
+  };
 
-    const handleProcess = () => {
-        if (!disabled && !processing) {
-            onProcess();
-        }
-    };
+  const handleNumberingModeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value as NumberingMode;
+    onNumberingModeChange(value);
+  };
 
-    return (
-        <Panel>
-            <Title>处理参数</Title>
+  const handleProcess = () => {
+    if (!disabled && !processing) {
+      onProcess();
+    }
+  };
 
-            <ParameterGroup>
-                <Label>最大尺寸: {maxSize}px</Label>
-                <SliderContainer>
-                    <Slider
-                        type="range"
-                        min="10"
-                        max="200"
-                        value={maxSize}
-                        onChange={handleMaxSizeChange}
-                        disabled={disabled}
-                    />
-                    <Value>{maxSize}</Value>
-                </SliderContainer>
-            </ParameterGroup>
+  return (
+    <Panel>
+      <Title>处理参数</Title>
 
-            <ParameterGroup>
-                <Label>颜色数量</Label>
-                <Select
-                    value={colorCount || 'auto'}
-                    onChange={handleColorCountChange}
-                    disabled={disabled}
-                >
-                    <option value="auto">自动检测</option>
-                    <option value="2">2 色</option>
-                    <option value="4">4 色</option>
-                    <option value="8">8 色</option>
-                    <option value="16">16 色</option>
-                    <option value="32">32 色</option>
-                    <option value="64">64 色</option>
-                </Select>
-            </ParameterGroup>
+      <ParameterGroup>
+        <Label>最大尺寸: {maxSize}px</Label>
+        <SliderContainer>
+          <Slider
+            type="range"
+            min="10"
+            max="200"
+            value={maxSize}
+            onChange={handleMaxSizeChange}
+            disabled={disabled}
+          />
+          <Value>{maxSize}</Value>
+        </SliderContainer>
+      </ParameterGroup>
 
-            <ProcessButton
-                onClick={handleProcess}
-                processing={processing}
-                disabled={disabled}
-            >
-                <ButtonContent>
-                    {processing && <LoadingSpinner />}
-                    {processing ? '处理中...' : '开始处理'}
-                </ButtonContent>
-            </ProcessButton>
-        </Panel>
-    );
+      <ParameterGroup>
+        <Label>颜色数量</Label>
+        <Select
+          value={colorCount || 'auto'}
+          onChange={handleColorCountChange}
+          disabled={disabled}
+        >
+          <option value="auto">自动检测</option>
+          <option value="2">2 色</option>
+          <option value="4">4 色</option>
+          <option value="8">8 色</option>
+          <option value="16">16 色</option>
+          <option value="32">32 色</option>
+          <option value="64">64 色</option>
+        </Select>
+      </ParameterGroup>
+
+      <ParameterGroup>
+        <Label>编号方式</Label>
+        <Select
+          value={numberingMode}
+          onChange={handleNumberingModeChange}
+          disabled={disabled}
+        >
+          <option value="diagonal_bottom_right">右下角对角线</option>
+          <option value="diagonal_bottom_left">左下角对角线</option>
+          <option value="top_to_bottom">从上到下</option>
+          <option value="bottom_to_top">从下到上</option>
+        </Select>
+      </ParameterGroup>
+
+      <ProcessButton
+        onClick={handleProcess}
+        processing={processing}
+        disabled={disabled}
+      >
+        <ButtonContent>
+          {processing && <LoadingSpinner />}
+          {processing ? '处理中...' : '开始处理'}
+        </ButtonContent>
+      </ProcessButton>
+    </Panel>
+  );
 };
 
 export default ParameterPanel; 

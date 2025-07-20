@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import List, Tuple, Dict, Optional
+from typing import List, Tuple, Dict, Optional, Literal
 from enum import Enum
 
 
@@ -8,6 +8,10 @@ class ImageFormat(str, Enum):
     PNG = "png"
     GIF = "gif"
     BMP = "bmp"
+
+
+# 定义编号方式类型
+NumberingMode = Literal["top_to_bottom", "bottom_to_top", "diagonal_bottom_left", "diagonal_bottom_right"]
 
 
 class UploadResponse(BaseModel):
@@ -22,12 +26,14 @@ class ProcessRequest(BaseModel):
     file_id: str
     max_size: int = 100
     color_count: Optional[int] = None
+    numbering_mode: NumberingMode = "diagonal_bottom_right"
 
 
 class PixelData(BaseModel):
     x: int
     y: int
     diagonal: int
+    number: int  # 新增字段，更明确地表示编号
     color: Tuple[int, int, int]
     hex: str
 

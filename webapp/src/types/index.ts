@@ -5,6 +5,9 @@ export interface ApiResponse<T = any> {
     error?: string;
 }
 
+// 编号方式类型
+export type NumberingMode = "top_to_bottom" | "bottom_to_top" | "diagonal_bottom_left" | "diagonal_bottom_right";
+
 // 文件上传响应
 export interface UploadResponse {
     file_id: string;
@@ -22,6 +25,7 @@ export interface ProcessRequest {
     file_id: string;
     max_size: number;
     color_count?: number;
+    numbering_mode?: NumberingMode;
 }
 
 // 像素数据
@@ -29,6 +33,7 @@ export interface PixelData {
     x: number;
     y: number;
     diagonal: number;
+    number: number;  // 新增字段，更明确地表示编号
     color: [number, number, number];
     hex: string;
 }
@@ -99,8 +104,10 @@ export interface PixelGridProps {
 export interface ParameterPanelProps {
     maxSize: number;
     colorCount?: number;
+    numberingMode?: NumberingMode;
     onMaxSizeChange: (size: number) => void;
     onColorCountChange: (count: number | undefined) => void;
+    onNumberingModeChange: (mode: NumberingMode) => void;
     onProcess: () => void;
     processing?: boolean;
     disabled?: boolean;

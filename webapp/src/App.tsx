@@ -7,7 +7,7 @@ import PixelGrid from './components/PixelGrid/PixelGrid';
 import StatsPanel from './components/StatsPanel/StatsPanel';
 import ExportPanel from './components/ExportPanel';
 import { processImage } from './services/api';
-import { UploadResponse, ProcessResult, ColorStat, DiagonalStat, HistoryItem } from './types';
+import { UploadResponse, ProcessResult, ColorStat, DiagonalStat, HistoryItem, NumberingMode } from './types';
 
 const AppContainer = styled.div`
   min-height: 100vh;
@@ -124,6 +124,7 @@ const App: React.FC = () => {
     const [processingResult, setProcessingResult] = useState<ProcessResult | null>(null);
     const [maxSize, setMaxSize] = useState(50);
     const [colorCount, setColorCount] = useState<number | undefined>(undefined);
+    const [numberingMode, setNumberingMode] = useState<NumberingMode>('diagonal_bottom_right');
     const [processing, setProcessing] = useState(false);
     const [statusMessage, setStatusMessage] = useState<{ type: 'success' | 'error' | 'info'; text: string } | null>(null);
     const [showDiagonals, setShowDiagonals] = useState(false);
@@ -157,6 +158,7 @@ const App: React.FC = () => {
                 file_id: uploadedFile.file_id,
                 max_size: maxSize,
                 color_count: colorCount,
+                numbering_mode: numberingMode,
             });
 
             setProcessingResult(result);
@@ -341,8 +343,10 @@ const App: React.FC = () => {
                         <ParameterPanel
                             maxSize={maxSize}
                             colorCount={colorCount}
+                            numberingMode={numberingMode}
                             onMaxSizeChange={setMaxSize}
                             onColorCountChange={setColorCount}
+                            onNumberingModeChange={setNumberingMode}
                             onProcess={handleProcess}
                             processing={processing}
                             disabled={!uploadedFile}

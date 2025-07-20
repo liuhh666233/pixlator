@@ -6,11 +6,13 @@ const GridContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
   padding: 20px;
   background: white;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  height: fit-content;
+  width: 100%;
 `;
 
 const GridTitle = styled.h3`
@@ -30,7 +32,7 @@ const PixelGridWrapper = styled.div<{ width: number; height: number; pixelSize: 
   border-radius: 4px;
   padding: 10px;
   margin: 0 auto;
-  max-height: 70vh;
+  height: fit-content;
 `;
 
 const Pixel = styled.div<{
@@ -73,13 +75,14 @@ const GridInfo = styled.div`
   gap: 20px;
   font-size: 14px;
   color: #666;
+  justify-content: center;
+  margin-bottom: 12px;
 `;
 
 const InfoItem = styled.div`
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 4px;
+  gap: 8px;
 `;
 
 const InfoLabel = styled.span`
@@ -203,7 +206,6 @@ const PixelGrid: React.FC<PixelGridProps> = ({
   if (!pixelData || pixelData.length === 0) {
     return (
       <GridContainer>
-        <GridTitle>像素网格</GridTitle>
         <div style={{ color: '#999', textAlign: 'center' }}>
           暂无像素数据
         </div>
@@ -246,9 +248,22 @@ const PixelGrid: React.FC<PixelGridProps> = ({
       </Controls>
 
       <GridContainer>
-        <GridTitle>像素网格</GridTitle>
+        <GridInfo>
+          <InfoItem>
+            <InfoLabel>尺寸:</InfoLabel>
+            <InfoValue>{dimensions.width} × {dimensions.height}</InfoValue>
+          </InfoItem>
+          <InfoItem>
+            <InfoLabel>像素总数:</InfoLabel>
+            <InfoValue>{dimensions.width * dimensions.height}</InfoValue>
+          </InfoItem>
+          <InfoItem>
+            <InfoLabel>对角线数量:</InfoLabel>
+            <InfoValue>{Math.max(...pixelData.flat().map(p => p.diagonal)) + 1}</InfoValue>
+          </InfoItem>
+        </GridInfo>
 
-        <div style={{ width: '100%', overflow: 'auto' }}>
+        <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
           <PixelGridWrapper
             width={dimensions.width}
             height={dimensions.height}
@@ -269,23 +284,6 @@ const PixelGrid: React.FC<PixelGridProps> = ({
             )}
           </PixelGridWrapper>
         </div>
-
-        <GridInfo>
-          <InfoItem>
-            <InfoLabel>尺寸</InfoLabel>
-            <InfoValue>{dimensions.width} × {dimensions.height}</InfoValue>
-          </InfoItem>
-          <InfoItem>
-            <InfoLabel>像素总数</InfoLabel>
-            <InfoValue>{dimensions.width * dimensions.height}</InfoValue>
-          </InfoItem>
-          <InfoItem>
-            <InfoLabel>对角线数量</InfoLabel>
-            <InfoValue>
-              {Math.max(...pixelData.flat().map(p => p.diagonal)) + 1}
-            </InfoValue>
-          </InfoItem>
-        </GridInfo>
       </GridContainer>
     </>
   );

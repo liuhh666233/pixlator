@@ -48,8 +48,9 @@
 
 ### 后端 (Python + FastAPI)
 ```
-src/
+pixlator/
 ├── main.py                 # FastAPI应用入口
+├── config.py              # 应用配置
 ├── api/
 │   ├── __init__.py
 │   ├── routes.py          # API路由定义
@@ -57,37 +58,38 @@ src/
 ├── services/
 │   ├── __init__.py
 │   ├── image_processor.py # 图片处理服务
-│   ├── pixel_analyzer.py  # 像素分析服务
-│   ├── file_manager.py    # 文件管理服务
-│   └── export_service.py  # 导出服务
+│   └── file_manager.py    # 文件管理服务
 ├── utils/
-│   ├── __init__.py
-│   ├── file_handler.py    # 文件处理工具
-│   └── image_utils.py     # 图片工具函数
-└── config.py              # 配置文件
+│   └── __init__.py
+├── tests/                 # 测试目录
+└── examples/              # 示例目录
 ```
 
-### 前端 (React + TypeScript)
+### 前端 (React + TypeScript + Vite)
 ```
-webapp/src/
-├── components/
-│   ├── ImageUploader/     # 图片上传组件
-│   ├── PixelGrid/         # 像素网格组件
-│   ├── ColorStats/        # 颜色统计组件
-│   ├── DiagonalStats/     # 对角线统计组件
-│   ├── ParameterPanel/    # 参数设置面板
-│   ├── StatsPanel/        # 统计面板 (四Tab设计)
-│   ├── ExportPanel/       # 导出面板
-│   └── ImagePreview/      # 图片预览组件
-├── hooks/
-│   ├── useImageProcessor.ts  # 图片处理逻辑
-│   ├── usePixelData.ts       # 像素数据管理
-│   ├── useHistory.ts         # 历史记录管理
-│   └── useExport.ts          # 导出功能
-├── types/
-│   └── index.ts             # TypeScript类型定义
-└── utils/
-    └── api.ts               # API调用工具
+webapp/
+├── src/
+│   ├── components/
+│   │   ├── ImageUploader/     # 图片上传组件
+│   │   ├── PixelGrid/         # 像素网格组件
+│   │   ├── ColorStats/        # 颜色统计组件
+│   │   ├── NumberStats/       # 对角线统计组件
+│   │   ├── ParameterPanel/    # 参数设置面板
+│   │   ├── StatsPanel/        # 统计面板
+│   │   ├── ExportPanel/       # 导出面板
+│   │   └── HistoryPanel/      # 历史记录面板
+│   ├── services/
+│   │   └── api.ts             # API调用服务
+│   ├── types/
+│   │   └── index.ts           # TypeScript类型定义
+│   ├── styles/                # 样式文件
+│   ├── utils/                 # 工具函数
+│   ├── App.tsx                # 主应用组件
+│   └── main.tsx               # 应用入口
+├── public/                    # 静态资源
+├── package.json               # 依赖配置
+├── vite.config.ts             # Vite配置
+└── tsconfig.json              # TypeScript配置
 ```
 
 ## 🔄 数据流程
@@ -129,14 +131,32 @@ webapp/src/
 - Node.js 16+
 - Yarn 包管理器
 
-### 后端启动
+### 使用 Nix (推荐)
+项目使用 Nix 进行依赖管理，确保开发环境的一致性：
+
 ```bash
-cd src
-pip install -r requirements.txt
-python main.py
+# 进入开发环境
+nix develop
+
+# 启动后端服务
+python -m pixlator.main
+
+# 新终端启动前端服务
+cd webapp
+yarn dev
 ```
 
-### 前端启动
+### 手动安装
+
+#### 后端启动
+```bash
+# 进入开发环境
+nix develop
+# 启动后端服务
+python -m pixlator.main
+```
+
+#### 前端启动
 ```bash
 cd webapp
 yarn install
@@ -144,8 +164,9 @@ yarn dev
 ```
 
 ### 访问应用
-- 前端: http://localhost:3000
+- 前端: http://localhost:5173 (Vite开发服务器)
 - 后端API: http://localhost:9000
+- API文档: http://localhost:9000/docs
 
 ## 📊 项目状态
 
@@ -182,6 +203,7 @@ yarn dev
 - **机器学习**: scikit-learn (KMeans)
 - **日志**: loguru
 - **数据格式**: JSON
+- **依赖管理**: Nix
 
 ### 前端
 - **框架**: React 18
@@ -190,6 +212,31 @@ yarn dev
 - **样式**: Styled Components
 - **HTTP 客户端**: Axios
 - **文件上传**: React Dropzone
+- **状态管理**: React Query
+- **表单处理**: React Hook Form
+
+### 开发工具
+- **包管理**: Yarn
+- **代码质量**: ESLint, Pre-commit
+- **环境管理**: Nix
+- **版本控制**: Git
+
+## 📁 项目结构
+
+```
+pixlator/
+├── pixlator/              # Python后端代码
+├── webapp/                # React前端代码
+├── uploads/               # 上传文件存储
+├── result/                # 处理结果存储
+├── nix/                   # Nix配置文件
+├── setup.py               # Python包配置
+├── flake.nix              # Nix flake配置
+├── .pre-commit-config.yaml # 代码质量配置
+├── README.md              # 项目说明
+├── DEVELOPMENT.md         # 开发指南
+└── API.md                 # API文档
+```
 
 ---
 
